@@ -1,0 +1,118 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Gateway",
+			"type": "coreclr",
+			"request": "launch",
+			"preLaunchTask": "build_gw",
+			"program": "${workspaceFolder}/src/ApiGateway/bin/Debug/net6.0/ApiGateway.dll",
+			"args": [],
+			"cwd": "${workspaceFolder}/src/ApiGateway",
+			"stopAtEntry": false,
+			"env": {
+				"ASPNETCORE_ENVIRONMENT": "Development"
+			},
+			"sourceFileMap": {
+				"/Views": "${workspaceFolder}/Views"
+			}
+		},
+		{
+			"name": "Events",
+			"type": "coreclr",
+			"request": "launch",
+			"preLaunchTask": "build_events",
+			"program": "${workspaceFolder}/src/Events.API/bin/Debug/net6.0/Events.API.dll",
+			"args": [],
+			"cwd": "${workspaceFolder}/src/Events.API",
+			"stopAtEntry": false,
+			"env": {
+				"ASPNETCORE_ENVIRONMENT": "Development"
+			},
+			"sourceFileMap": {
+				"/Views": "${workspaceFolder}/Views"
+			}
+		},
+		{
+			"name": "General",
+			"type": "coreclr",
+			"request": "launch",
+			"preLaunchTask": "build_general",
+			"program": "${workspaceFolder}/src/General.API/bin/Debug/net6.0/General.API.dll",
+			"args": [],
+			"cwd": "${workspaceFolder}/src/General.API",
+			"stopAtEntry": false,
+			"env": {
+				"ASPNETCORE_ENVIRONMENT": "Development"
+			},
+			"sourceFileMap": {
+				"/Views": "${workspaceFolder}/Views"
+			}
+		},
+		{
+			"name": "Products",
+			"type": "coreclr",
+			"request": "launch",
+			"preLaunchTask": "build_products",
+			"program": "${workspaceFolder}/src/Products.API/bin/Debug/net6.0/Products.API.dll",
+			"args": [],
+			"cwd": "${workspaceFolder}/src/Products.API",
+			"stopAtEntry": false,
+			"env": {
+				"ASPNETCORE_ENVIRONMENT": "Development"
+			},
+			"sourceFileMap": {
+				"/Views": "${workspaceFolder}/Views"
+			}
+		},
+		{
+			"name": "Sales",
+			"type": "coreclr",
+			"request": "launch",
+			"preLaunchTask": "build_sales",
+			"program": "${workspaceFolder}/src/Sales.API/bin/Debug/net6.0/Sales.API.dll",
+			"args": [],
+			"cwd": "${workspaceFolder}/src/Sales.API",
+			"stopAtEntry": false,
+			"env": {
+				"ASPNETCORE_ENVIRONMENT": "Development"
+			},
+			"sourceFileMap": {
+				"/Views": "${workspaceFolder}/Views"
+			}
+		},
+		{
+			"name": "Users",
+			"type": "coreclr",
+			"request": "launch",
+			"preLaunchTask": "build_users",
+			"program": "${workspaceFolder}/src/Users.API/bin/Debug/net6.0/Users.API.dll",
+			"args": [],
+			"cwd": "${workspaceFolder}/src/Users.API",
+			"stopAtEntry": false,
+			// "serverReadyAction": {
+			// 	"action": "openExternally",
+			// 	"pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+			// },
+			"env": {
+				"ASPNETCORE_ENVIRONMENT": "Development"
+			},
+			"sourceFileMap": {
+				"/Views": "${workspaceFolder}/Views"
+			}
+		}
+	],
+	"compounds": [
+		{
+			"name": "All Services",
+			"configurations": [
+				"Gateway",
+				"Events",
+				"General",
+				"Products",
+				"Sales",
+				"Users"
+			]
+		}
+	]
+}
