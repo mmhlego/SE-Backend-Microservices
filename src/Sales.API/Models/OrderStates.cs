@@ -1,5 +1,5 @@
 namespace Sales.API.Models {
-    public enum OrderStates {
+    public enum orderStates {
 
     }
 }
