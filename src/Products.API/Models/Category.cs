@@ -6,6 +6,7 @@ namespace Products.API.Models {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Title { get; set; }
+        public string IconName { get; set; }
 
         public List<Subcategory> SubCategories { get; set; }
     }

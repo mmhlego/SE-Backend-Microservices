@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 #pragma warning disable CS8618
 namespace SharedModels {
@@ -11,8 +10,11 @@ namespace SharedModels {
         public string Password { get; set; }
         public string FirstName { get; set; } = "";
         public string LastName { get; set; } = "";
+        [Url]
         public string Avatar { get; set; } = "";
+        [EmailAddress]
         public string Email { get; set; }
+        [Phone]
         public string PhoneNumber { get; set; }
         public bool Verified { get; set; } = false;
         public bool Restricted { get; set; } = false;
