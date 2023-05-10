@@ -1,5 +1,10 @@
 namespace Sales.API.Models {
-    public enum orderStates {
-
+    public enum OrderStates {
+        Filling,
+        Purchased,
+        Rejected,
+        Approved,
+        Sending,
+        Delivered,
     }
 }

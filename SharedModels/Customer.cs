@@ -1,19 +1,15 @@
-using SharedModels;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Users.API.Models {
+#pragma warning disable CS8618
+namespace SharedModels {
     public class Customer {
-
         [Key]
-        public Guid Id { get; set; }
-        public Guid UserId { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
         public int Balance { get; set; }
 
+        public Guid UserId { get; set; }
         [ForeignKey("UserId")]
-        public User user
-        {
-            get; set;
-        }
+        public User User { get; set; }
     }
 }

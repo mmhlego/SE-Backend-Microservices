@@ -1,4 +1,4 @@
-namespace Users.API.Models {
+namespace SharedModels {
     public enum UserTypes {
         Owner,
         Admin,

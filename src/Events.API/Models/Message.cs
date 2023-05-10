@@ -1,29 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 using SharedModels;
-namespace Events.API.Models
-{
-    public class message
-    {
+
+#pragma warning disable CS8618
+namespace Events.API.Models {
+    public class Message {
         [Key]
-        public Guid Id { get; set; }
-        public Guid UserId { get; set; }        
-        public Guid Type { get; set; }
-        public string Message { get; set; }
-        public DateTime IssueDate { get; set; }
-        public bool isRead { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Body { get; set; }
+        public MessageTypes Type { get; set; }
+        public DateTime IssueDate { get; set; } = DateTime.Now;
+        public bool IsRead { get; set; } = false;
+
+        public Guid UserId { get; set; }
         [ForeignKey("UserId")]
-        public User user { get; set; }
-        [ForeignKey("Type")]
-        public messageType type { get; set; }
-    }
-    public class messageType {
-        [Key]
-        public Guid Id { get; set; }
-        public string Text { get; set; }
+        public User RootUser { get; set; }
     }
 }

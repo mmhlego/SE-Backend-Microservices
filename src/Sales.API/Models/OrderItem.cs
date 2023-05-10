@@ -1,22 +1,19 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace Sales.API.Models
-{
-    public class orderItem
-    {
+#pragma warning disable CS8618
+namespace Sales.API.Models {
+    public class OrderItem {
         [Key]
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public int Amount { get; set; }
+
         public Guid OrderId { get; set; }
-        public Guid PriceId { get; set; }
-        public int Amount  { get; set; }
         [ForeignKey("OrderId")]
-        public Order order { get; set; }
-        [ForeignKey("PriceId")]
-        public salePrice SalePrice { get; set; }
+        public Order Order { get; set; }
+
+        public Guid SalePriceId { get; set; }
+        [ForeignKey("SalePriceId")]
+        public SalePrice SalePrice { get; set; }
     }
 }

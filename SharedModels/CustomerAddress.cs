@@ -1,15 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using SharedModels;
 
 #pragma warning disable CS8618
-namespace General.API.Models {
-    public class like {
+namespace SharedModels {
+    public class CustomerAddress {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
-        public bool Like { get; set; }
-        public Guid TargetId { get; set; }
-        public LikeTypes Type { get; set; }
+        public string Province { get; set; }
+        public string City { get; set; }
+        public string Address { get; set; }
+        public string ZipCode { get; set; }
 
         public Guid CustomerId { get; set; }
         [ForeignKey("CustomerId")]
