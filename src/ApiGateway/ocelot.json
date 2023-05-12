@@ -1,18 +1,78 @@
 {
 	"GlobalConfiguration": {
-		"BaseUrl": "http://localhost:5000"
+		"BaseUrl": "http://localhost:6000"
 	},
 	"Routes": [
 		{
-			"DownstreamPathTemplate": "/BooksApi/{everything}",
+			"DownstreamPathTemplate": "/api/Message/{everything}",
 			"DownstreamScheme": "http",
 			"DownstreamHostAndPorts": [
 				{
 					"Host": "localhost",
-					"Port": 5001
+					"Port": 6001
 				}
 			],
-			"UpstreamPathTemplate": "/{everything}",
+			"UpstreamPathTemplate": "/Events/{everything}",
+			"UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE"]
+		},
+		{
+			"DownstreamPathTemplate": "/api/{everything}",
+			"DownstreamScheme": "http",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "localhost",
+					"Port": 6002
+				}
+			],
+			"UpstreamPathTemplate": "/General/{everything}",
+			"UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE"]
+		},
+		{
+			"DownstreamPathTemplate": "/api/{everything}",
+			"DownstreamScheme": "http",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "localhost",
+					"Port": 6003
+				}
+			],
+			"UpstreamPathTemplate": "/Products/{everything}",
+			"UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE"]
+		},
+		{
+			"DownstreamPathTemplate": "/api/{everything}",
+			"DownstreamScheme": "http",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "localhost",
+					"Port": 6004
+				}
+			],
+			"UpstreamPathTemplate": "/Sales/{everything}",
+			"UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE"]
+		},
+		{
+			"DownstreamPathTemplate": "/api/Auth/{everything}",
+			"DownstreamScheme": "http",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "localhost",
+					"Port": 6005
+				}
+			],
+			"UpstreamPathTemplate": "/Auth/{everything}",
+			"UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE"]
+		},
+		{
+			"DownstreamPathTemplate": "/api/{everything}",
+			"DownstreamScheme": "http",
+			"DownstreamHostAndPorts": [
+				{
+					"Host": "localhost",
+					"Port": 6005
+				}
+			],
+			"UpstreamPathTemplate": "/Users/{everything}",
 			"UpstreamHttpMethod": ["GET", "POST", "PUT", "DELETE"]
 		}
 	]
