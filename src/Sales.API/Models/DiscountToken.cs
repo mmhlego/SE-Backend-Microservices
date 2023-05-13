@@ -1,12 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
-namespace Sales.API.Models
-{
-    public class DiscountToken
-    {
-        
+#pragma warning disable CS8618
+namespace Sales.API.Models {
+    public class DiscountToken {
+        [Key]
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Token { get; set; }
+        public DiscountTokenTypes Type;
+        public int Amount { get; set; }
+        public int AvailableCount { get; set; }
+        public DateTime ExpireDate { get; set; }
+
+        public List<Purchase> Purchase { get; set; }
     }
 }

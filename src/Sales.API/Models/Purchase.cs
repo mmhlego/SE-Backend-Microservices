@@ -1,12 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using SharedModels;
 
-namespace Sales.API.Models
-{
-    public class Purchase
-    {
-        
+#pragma warning disable CS8618
+namespace Sales.API.Models {
+    public class Purchase {
+        [Key]
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public int TotalPrice { get; set; }
+        public string Description { get; set; }
+        public DateTime PurchaseDate { get; set; }
+
+        public Guid OrderId { get; set; }
+        [ForeignKey("OrderId")]
+        public Order Order { get; set; }
+
+        public Guid CustomerAddressId { get; set; }
+        [ForeignKey("CustomerAddressId")]
+        public CustomerAddress CustomerAddress { get; set; }
+
+        public Guid? DiscountTokenId { get; set; } = null;
     }
 }

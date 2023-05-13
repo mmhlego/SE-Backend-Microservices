@@ -1,12 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations;
 
-namespace Products.API.Models
-{
-    public class Category
-    {
-        
+#pragma warning disable CS8618
+namespace Products.API.Models {
+    public class Category {
+        [Key]
+        public Guid Id { get; set; } = Guid.NewGuid();
+        public string Title { get; set; }
+        public string IconName { get; set; }
+
+        public List<Subcategory> SubCategories { get; set; }
     }
 }

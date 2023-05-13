@@ -1,7 +1,7 @@
-namespace General.API.Models
-{
-    public enum PosterTypes
-    {
-        
+namespace General.API.Models {
+    public enum PosterTypes {
+        LargePoster,
+        SmallPoster,
+        Advertisement,
     }
 }
