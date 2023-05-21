@@ -9,7 +9,6 @@ namespace SharedModels {
         public long Balance { get; set; }
 
         public Guid UserId { get; set; }
-        [ForeignKey("UserId")]
-        public User User { get; set; }
+        
     }
 }
