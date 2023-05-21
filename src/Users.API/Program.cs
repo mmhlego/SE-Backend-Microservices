@@ -1,4 +1,5 @@
 using JwtAuthenticationManager;
+using Microsoft.EntityFrameworkCore;
 using Users.API.Data;
 using Users.API.Services;
 
@@ -7,9 +8,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<JwtTokenHandler>();
 builder.Services.AddJwtAuthentication();
 
-// builder.Services.AddDbContext<Context>(options => {
-//     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
-// });
+builder.Services.AddDbContext<UsersContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
 
 builder.Services.AddScoped<IUsersService, UsersService>();
 

@@ -9,7 +9,5 @@ namespace Products.API.Models {
         public string Title { get; set; }
 
         public Guid CategoryId { get; set; }
-        [ForeignKey("CategoryId")]
-        public Category Category { get; set; }
     }
 }

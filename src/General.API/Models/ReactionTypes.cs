@@ -1,5 +1,6 @@
 namespace General.API.Models {
-    public enum LikeTypes {
+    public enum ReactionTypes
+    {
         ProductLike,
         SellerLike,
         CommentLike,
