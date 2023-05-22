@@ -8,9 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<JwtTokenHandler>();
 builder.Services.AddJwtAuthentication();
 
-builder.Services.AddDbContext<UsersContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+builder.Services.AddDbContext<UsersContext>(options => {
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
 });
 
 builder.Services.AddScoped<IUsersService, UsersService>();

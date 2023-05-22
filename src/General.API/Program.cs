@@ -9,9 +9,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<JwtTokenHandler>();
 builder.Services.AddJwtAuthentication();
 
-builder.Services.AddDbContext<GeneralContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
+builder.Services.AddDbContext<GeneralContext>(options => {
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
 });
 builder.Services.AddScoped<IReactionService, ReactionService>();
 builder.Services.AddScoped<IBookmarkService, BookmarkService>();

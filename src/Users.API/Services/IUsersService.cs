@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
 using SharedModels;
 
-namespace Users.API.Services
-{
-    public interface IUsersService
-    {
+namespace Users.API.Services {
+    public interface IUsersService {
         IEnumerable<User> GetUsers();
         User GetUserById(Guid id);
         User GetUserByUsername(string username);

@@ -1,34 +1,21 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Products.API.Data;
 using Products.API.Models;
-namespace Products.API.Services
-{
-    public class CategoryService : ICategoryService
-    {
+namespace Products.API.Services {
+    public class CategoryService : ICategoryService {
         private readonly ProductsContext _context;
 
-        public CategoryService(ProductsContext context)
-        {
+        public CategoryService(ProductsContext context) {
             _context = context;
         }
 
-
-        public IEnumerable<Category> GetCategories()
-        {
+        public IEnumerable<Category> GetCategories() {
             if (_context.Categories == null)
                 throw new ArgumentNullException(nameof(_context.Categories));
 
             return _context.Categories;
         }
 
-        public void AddCategory(string title, string iconName)
-        {
+        public void AddCategory(string title, string iconName) {
             if (string.IsNullOrEmpty(title))
                 throw new ArgumentNullException("Category title is required.");
 
@@ -39,8 +26,7 @@ namespace Products.API.Services
             _context.SaveChanges();
         }
 
-        public void UpdateCategory(Category category)
-        {
+        public void UpdateCategory(Category category) {
             if (category == null)
                 throw new ArgumentNullException("Category is required to update.");
 
@@ -48,8 +34,7 @@ namespace Products.API.Services
             _context.SaveChanges();
         }
 
-        public IEnumerable<Subcategory> GetSubcategories(Guid categoryId)
-        {
+        public IEnumerable<Subcategory> GetSubcategories(Guid categoryId) {
             if (categoryId == default(Guid))
                 throw new ArgumentNullException("Category Id is required.");
 
@@ -61,8 +46,7 @@ namespace Products.API.Services
             return subcategory;
         }
 
-        public void AddSubcategory(Guid categoryId, string title)
-        {
+        public void AddSubcategory(Guid categoryId, string title) {
             if (categoryId == default(Guid))
                 throw new ArgumentNullException("Category Id is required.");
 
@@ -75,17 +59,16 @@ namespace Products.API.Services
                 throw new ArgumentException("Category not found.");
 
             var subcategory = _context.Subcategories.SingleOrDefault(c => c.CategoryId == categoryId && c.Title == title);
-           
-            if(subcategory != null)
-                throw new Exception("Subcategory already exist.");
-            
 
-            _context.Subcategories.Add(new Subcategory { Title = title , CategoryId = categoryId});
+            if (subcategory != null)
+                throw new Exception("Subcategory already exist.");
+
+
+            _context.Subcategories.Add(new Subcategory { Title = title, CategoryId = categoryId });
             _context.SaveChanges();
         }
 
-        public void UpdateSubcategory(Subcategory subcategory)
-        {
+        public void UpdateSubcategory(Subcategory subcategory) {
             if (subcategory == null)
                 throw new ArgumentNullException("Subcategory is required to update.");
             var sub = _context.Subcategories.SingleOrDefault(c => c.Id == subcategory.Id);

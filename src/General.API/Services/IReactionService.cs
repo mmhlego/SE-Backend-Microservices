@@ -1,10 +1,7 @@
 ﻿using General.API.Models;
 
-
-namespace General.API.Services
-{
-    public interface IReactionService
-    {
+namespace General.API.Services {
+    public interface IReactionService {
         List<Reaction> GetLikesByProductId(Guid productId);
         List<Reaction> GetLikesBySellerId(Guid sellerId);
         List<Reaction> GetLikesByCommentId(Guid commentId);
