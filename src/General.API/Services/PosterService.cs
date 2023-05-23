@@ -41,7 +41,7 @@ namespace General.API.Services {
             P.TargetUrl = poster.TargetUrl;
             P.Title = poster.Title;
             P.Type = poster.Type;
-            _context.Posters.Update(p);
+            _context.Posters.Update(P);
             _context.SaveChanges();
         }
     }
