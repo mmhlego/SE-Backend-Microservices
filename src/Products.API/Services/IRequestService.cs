@@ -9,9 +9,10 @@ namespace Products.API.Services {
     public interface IRequestService
     {
         List<ProductRequest> GetRequests(ProductRequestTypes type);
-        void AddRequest(Product requestedProduct, ProductRequestTypes type);
-        void AcceptAddRequest(Guid requestId);
-        void MergeUpdateRequest(Guid requestId);
-        void DeleteRequest(Guid requestId);
+        Guid AddRequest(Product requestedProduct, ProductRequestTypes type , Guid SellerId);
+        bool AcceptAddRequest(Guid requestId);
+        bool MergeUpdateRequest(Guid requestId);
+        bool DeleteRequest(Guid requestId);
     }
+
 }
