@@ -4,7 +4,7 @@ using SharedModels;
 namespace Products.API.Services {
     public interface IProductService {
         List<Product> GetProducts();
-        Product GetProductById(Guid id);
+        Product? GetProductById(Guid id);
         void AddProduct(string name, string description, Guid subCategory, ProductStates state);
         void UpdateProduct(Product updatedProduct);
         List<ProductImage> GetProductImages(Guid productId);

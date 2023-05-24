@@ -14,22 +14,22 @@ namespace General.API.Services {
             return _context.ProductComments.ToList();
         }
 
-        public ProductComment GetCommentById(Guid id) {
+        public ProductComment? GetCommentById(Guid id) {
             var comment = _context.ProductComments.Where(c => c.Id == id).FirstOrDefault();
 
-            if (comment == null) {
-                throw new Exception("No comment with the specified id was found");
-            }
+            // if (comment == null) {
+            //     throw new Exception("No comment with the specified id was found");
+            // }
 
             return comment;
         }
 
         public List<ProductComment> GetCommentsByCustomerId(Guid customerId) {
-            var comment = _context.ProductComments.Where(u => u.CustomerId == customerId).FirstOrDefault();
+            // var comment = _context.ProductComments.Where(u => u.CustomerId == customerId).FirstOrDefault();
 
-            if (comment == null) {
-                throw new Exception("No comment with the specified id was found");
-            }
+            // if (comment == null) {
+            //     throw new Exception("No comment with the specified id was found");
+            // }
 
             return _context.ProductComments.Where(c => c.CustomerId == customerId).ToList();
         }
@@ -47,11 +47,9 @@ namespace General.API.Services {
             //}
 
             var productComment = new ProductComment {
-                Id = Guid.NewGuid(),
                 CustomerId = customerId,
                 ProductId = productId,
                 Content = content,
-                IssueDate = DateTime.Now
             };
 
             _context.ProductComments.Add(productComment);
@@ -62,7 +60,8 @@ namespace General.API.Services {
             var comment = _context.ProductComments.Where(c => c.Id == id).FirstOrDefault();
 
             if (comment == null) {
-                throw new Exception("No comment with the specified id was found");
+                // throw new Exception("No comment with the specified id was found");
+                return;
             }
 
             _context.ProductComments.Remove(comment);
