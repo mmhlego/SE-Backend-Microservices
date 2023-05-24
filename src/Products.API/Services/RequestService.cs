@@ -3,6 +3,7 @@ using Products.API.Data;
 using Products.API.Models;
 using SharedModels;
 
+
 namespace Products.API.Services {
 
     public class RequestService : IRequestService {
@@ -13,10 +14,13 @@ namespace Products.API.Services {
         }
 
         public List<ProductRequest> GetRequests(ProductRequestTypes type) {
-            return _context.ProductRequests.Where(pr => pr.Type == type).ToList();
+            return _context.ProductRequests
+                .Include(pr => pr.Product)
+                .Where(pr => pr.Type == type)
+                .ToList();
         }
 
-        public void AddRequest(Guid sellerId, Product requestedProduct, ProductRequestTypes type) {
+        public Guid AddRequest(Guid sellerId, Product requestedProduct, ProductRequestTypes type) {
             switch (type) {
                 case ProductRequestTypes.AddRequest:
                     requestedProduct.State = ProductStates.AddPending;
@@ -25,109 +29,68 @@ namespace Products.API.Services {
                     requestedProduct.State = ProductStates.UpdatePending;
                     break;
             }
-            var request = new ProductRequest {
-                Type = type,
-                ProductRowId = requestedProduct.RowId,
-                Product = requestedProduct,
-                SellerId = sellerId,
-            };
 
+            var request = new ProductRequest {
+                SellerId = sellerId,
+                Type = type,
+                Product = requestedProduct
+            };
             _context.ProductRequests.Add(request);
             _context.SaveChanges();
+
+            return request.Id;
         }
 
-        public void AcceptAddRequest(Guid requestId) {
+        public bool AcceptAddRequest(Guid requestId) {
             var request = _context.ProductRequests
                 .Include(pr => pr.Product)
                 .FirstOrDefault(pr => pr.Id == requestId && pr.Type == ProductRequestTypes.AddRequest);
-
             if (request == null) {
-                return;
+                return false;
                 // throw new ArgumentException("Add request not found");
             }
+            var newProduct = new Product {
+                ProductId = request.Product.ProductId,
+                Subcategory = request.Product.Subcategory,
+                Name = request.Product.Name,
+                Description = request.Product.Description,
+                State = ProductStates.Available
+            };
 
-            request.Product.State = ProductStates.Available;
-
+            _context.Products.Add(newProduct);
             _context.ProductRequests.Remove(request);
+            _context.Products.Remove(request.Product);
             _context.SaveChanges();
+            return true;
         }
 
-        public void MergeUpdateRequest(Guid requestId) {
+        public bool MergeUpdateRequest(Guid requestId) {
             var request = _context.ProductRequests
                 .Include(pr => pr.Product)
                 .FirstOrDefault(pr => pr.Id == requestId && pr.Type == ProductRequestTypes.UpdateRequest);
 
-            if (request == null) {
-                // throw new ArgumentException("Update request not found");
-                return;
+            if (request == null)
+                return false;
+
+            var product = _context.Products.FirstOrDefault(p => p.RowId == request.ProductRowId);
+            if (product == null) {
+                return false;
             }
-
-            var requestedProduct = request.Product;
-            var product = _context.Products.First(p =>
-                p.ProductId == requestedProduct.ProductId &&
-                p.State == ProductStates.Available
-            );
-
-            product.Name = requestedProduct.Name;
-            product.Description = requestedProduct.Description;
-            product.State = requestedProduct.State;
-            product.Subcategory = requestedProduct.Subcategory;
-
+            product.Name = request.Product.Name;
+            product.Description = request.Product.Description;
             _context.Products.Update(product);
-            _context.Products.Remove(requestedProduct);
-            _context.ProductRequests.Remove(request);
             _context.SaveChanges();
-
-            //             var updatedProduct = request.Product;
-            // 
-            //             // get all update requests for the same product and merge them
-            //             var updateRequests = _context.ProductRequests
-            //                 .Where(pr => pr.Type == ProductRequestTypes.UpdateRequest && pr.Product.RowId == updatedProduct.RowId)
-            //                 .ToList();
-            // 
-            //             foreach (var updateRequest in updateRequests) {
-            //                 if (updateRequest.Product.State != ProductStates.UpdatePending) {
-            //                     continue;
-            //                 }
-            // 
-            // 
-            // 
-            //                 updatedProduct.Name = updateRequest.Product.Name != null ? updateRequest.Product.Name : updatedProduct.Name;
-            //                 updatedProduct.Description = updateRequest.Product.Description != null ? updateRequest.Product.Description : updatedProduct.Description;
-            //                 // updatedProduct.Subcategory = updateRequest.Product.Subcategory.GetValueOrDefault(updatedProduct.Subcategory);
-            //                 updatedProduct.Subcategory = updateRequest.Product.Subcategory != Guid.Empty ? updateRequest.Product.Subcategory : updatedProduct.Subcategory;
-            //             }
-            // 
-            // 
-            //             // update the original product
-            //             var product = _context.Products.FirstOrDefault(p => p.RowId == updatedProduct.RowId);
-            //             if (product == null) {
-            //                 throw new ArgumentException("Product not found");
-            //             }
-            // 
-            //             product.Name = updatedProduct.Name;
-            //             product.Description = updatedProduct.Description;
-            //             product.Subcategory = updatedProduct.Subcategory;
-            //             product.State = ProductStates.Available;
-            // 
-            //             // delete all update requests
-            //             foreach (var updateRequest in updateRequests) {
-            //                 _context.ProductRequests.Remove(updateRequest);
-            //             }
-
-            // _context.SaveChanges();
+            return true;
         }
 
-        public void DeleteRequest(Guid requestId) {
+        public bool DeleteRequest(Guid requestId) {
             var request = _context.ProductRequests.FirstOrDefault(pr => pr.Id == requestId);
-
             if (request == null) {
-                return;
-                // throw new ArgumentException("Request not found");
+                return false;
             }
-
             _context.ProductRequests.Remove(request);
             _context.SaveChanges();
+            return true;
         }
     }
 }

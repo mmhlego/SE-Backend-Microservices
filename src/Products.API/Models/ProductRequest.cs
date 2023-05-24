@@ -14,7 +14,6 @@ namespace Products.API.Models {
         public Product Product { get; set; }
 
         public Guid SellerId { get; set; }
-        [ForeignKey("SellerId")]
-        public Seller Seller { get; set; }
+        
     }
 }
