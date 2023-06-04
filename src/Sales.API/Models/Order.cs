@@ -19,9 +19,9 @@ namespace Sales.API.Models {
             }
         }
 
-        public Guid CustomerId { get; set; }
-        [ForeignKey("CustomerId")]
-        public Customer Customer { get; set; }
+        public Guid UserId { get; set; }
+        [ForeignKey("UserId")]
+        public User User { get; set; }
 
         public Guid? PurchaseId { get; set; } = null;
 

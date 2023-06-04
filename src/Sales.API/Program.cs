@@ -1,14 +1,12 @@
 using JwtAuthenticationManager;
+using Microsoft.EntityFrameworkCore;
+using Sales.API.Data;
 using Sales.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<JwtTokenHandler>();
 builder.Services.AddJwtAuthentication();
-
-// builder.Services.AddDbContext<Context>(options => {
-//     options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
-// });
 
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
