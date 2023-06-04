@@ -31,7 +31,7 @@ namespace General.API.Services {
             //     throw new Exception("No comment with the specified id was found");
             // }
 
-            return _context.ProductComments.Where(c => c.CustomerId == customerId).ToList();
+            return _context.ProductComments.Where(c => c.UserId == customerId).ToList();
         }
 
         public List<ProductComment> GetCommentsByProductId(Guid productId) {
@@ -47,7 +47,7 @@ namespace General.API.Services {
             //}
 
             var productComment = new ProductComment {
-                CustomerId = customerId,
+                UserId = customerId,
                 ProductId = productId,
                 Content = content,
             };

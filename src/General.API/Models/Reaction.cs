@@ -11,7 +11,7 @@ namespace General.API.Models
         public bool Like { get; set; }
         public Guid TargetId { get; set; }
         public ReactionTypes Type { get; set; }
-        public Guid CustomerId { get; set; }
+        public Guid UserId { get; set; }
       
     }
 }

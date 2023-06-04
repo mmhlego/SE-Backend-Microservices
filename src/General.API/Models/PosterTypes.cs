@@ -1,7 +1,7 @@
 namespace General.API.Models {
     public enum PosterTypes {
-        LargePoster,
-        SmallPoster,
-        Advertisement,
+        LargePoster=1,
+        SmallPoster=2,
+        Advertisement=3,
     }
 }

@@ -33,4 +33,8 @@
     <None Remove="Microsoft.EntityFrameworkCore.Relational" />
     <None Remove="Microsoft.EntityFrameworkCore.Design" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\Responses\" />
+  </ItemGroup>
 </Project>

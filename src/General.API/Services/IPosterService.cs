@@ -7,7 +7,7 @@ using General.API.Models;
 namespace General.API.Services {
     public interface IPosterService
     {
-        IEnumerable<Poster> GetPosters();
+        List<Poster> GetPosters();
         void AddPoster(string title, PosterTypes type, string imageUrl, string targetUrl);
         void UpdatePoster(Poster poster);
     }

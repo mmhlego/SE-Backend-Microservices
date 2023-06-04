@@ -16,11 +16,15 @@ namespace General.API.Services {
             _context = context;
         }
 
-        public IEnumerable<Poster> GetPosters()
+        public List<Poster> GetPosters()
         {
             return _context.Posters.ToList();
         }
 
+        public Poster? GetPosterById(Guid posterId)
+        {
+            return _context.Posters.FirstOrDefault(c => c.Id == posterId);
+        }
         public void AddPoster(string title, PosterTypes type, string imageUrl, string targetUrl)
         {
             var poster = new Poster
@@ -42,6 +46,19 @@ namespace General.API.Services {
             P.Title = poster.Title;
             P.Type = poster.Type;
             _context.Posters.Update(P);
+            _context.SaveChanges();
+        }
+        public void DeletePoster(Guid id)
+        {
+            var poster = _context.Posters.Where(c => c.Id == id).FirstOrDefault();
+
+            if (poster == null)
+            {
+                // throw new Exception("No comment with the specified id was found");
+                return;
+            }
+
+            _context.Posters.Remove(poster);
             _context.SaveChanges();
         }
     }

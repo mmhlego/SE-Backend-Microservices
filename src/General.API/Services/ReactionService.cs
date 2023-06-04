@@ -42,13 +42,13 @@ namespace General.API.Services {
         public bool AddReaction(Guid customerId, Guid targetId, ReactionTypes type, bool like) {
             // try {
             // Check if reaction from customerId exists
-            if (_context.Reactions.Any(r => r.CustomerId == customerId && r.TargetId == targetId && r.Type == type)) {
+            if (_context.Reactions.Any(r => r.UserId == customerId && r.TargetId == targetId && r.Type == type)) {
                 // throw new ArgumentNullException("The reaction from the customerId already exists");
                 return false;
             }
 
             _context.Reactions.Add(new Reaction {
-                CustomerId = customerId,
+                UserId = customerId,
                 TargetId = targetId,
                 Type = type,
                 Like = like

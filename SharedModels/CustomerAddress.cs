@@ -11,8 +11,8 @@ namespace SharedModels {
         public string Address { get; set; }
         public string ZipCode { get; set; }
 
-        public Guid CustomerId { get; set; }
-        [ForeignKey("CustomerId")]
-        public Customer Customer { get; set; }
+        public Guid UserId { get; set; }
+        [ForeignKey("UserId")]
+        public User User { get; set; }
     }
 }

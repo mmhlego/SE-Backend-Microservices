@@ -10,9 +10,9 @@ namespace General.API.Models {
         public string Content { get; set; }
         public DateTime IssueDate { get; set; } = DateTime.Now;
 
-        public Guid CustomerId { get; set; }
-        [ForeignKey("CustomerId")]
-        public Customer Customer { get; set; }
+        public Guid UserId { get; set; }
+        [ForeignKey("UserId")]
+        public User User { get; set; }
 
         public Guid ProductId { get; set; }
         [ForeignKey("ProductId")]
