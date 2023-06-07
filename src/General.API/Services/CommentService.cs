@@ -1,12 +1,10 @@
 using General.API.Data;
 using General.API.Models;
-using Users.API.Data;
-
 namespace General.API.Services {
     public class CommentService : ICommentService {
         private readonly GeneralContext _context;
 
-        public CommentService(GeneralContext context, UsersContext userContext) {
+        public CommentService(GeneralContext context) {
             _context = context;
         }
 

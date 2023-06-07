@@ -17,7 +17,6 @@ using General.API.Services;
 namespace General.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
     public class CommentController : ControllerBase
     {
         CommentService _comments;
@@ -60,7 +59,7 @@ namespace General.API.Controllers
         [Authorize(Roles = "Customer")]
         public IActionResult PostComments([FromBody] PostCommentRequests comment)
         {
-            bool checkUser = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
+            Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
 
             if (!ModelState.IsValid)
             {
@@ -77,13 +76,15 @@ namespace General.API.Controllers
         [Route("comments/{id}")]
         public IActionResult DeleteComment(Guid commentId)
         {
+            Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
+            Enum.TryParse(User.FindFirstValue(ClaimTypes.Role), out UserTypes role);
             ProductComment? comment = _comments.GetCommentById(commentId);
             if (comment == null)
             {
                 return BadRequest();
             }
 
-            if (comment.UserId != GetUserId() && GetAccessLevel() != UserTypes.Admin)
+            if (comment.UserId != UserId && role != UserTypes.Admin)
             {
                 return StatusCode(StatusCodes.Status401Unauthorized);
             }
@@ -91,15 +92,6 @@ namespace General.API.Controllers
             return Ok(comment);
 
         }
-        public Guid GetUserId()
-        {
-            Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
-            return UserId;
-        }
-        public UserTypes GetAccessLevel()
-        {
-            Enum.TryParse(User.FindFirstValue(ClaimTypes.Role), out UserTypes role);
-            return role;
-        }
+       
     }
 }

@@ -9,62 +9,64 @@ using General.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace General.API.Controllers {
+namespace General.API.Controllers
+{
     [ApiController]
-    [Route("api/[controller]")]
-    public class BookmarkController : ControllerBase {
-            private readonly BookmarkService _bookmarkService;
+    public class BookmarkController : ControllerBase
+    {
+       private readonly BookmarkService _bookmarkService;
 
-            public BookmarkController(BookmarkService bookmarkService)
-            {
-                _bookmarkService = bookmarkService;
-            }
+        public BookmarkController(BookmarkService bookmarkService)
+        {
+            _bookmarkService = bookmarkService;
+        }
 
         [HttpGet]
         [Route("/bookmarks")]
-            public ActionResult<List<Bookmark>> GetBookmarks()
-        { 
-                List<Bookmark> bookmarks = _bookmarkService.GetBookmarksByUserId(GetUserId());
+        public ActionResult<List<Bookmark>> GetBookmarks()
+        {
+            Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
+            List<Bookmark> bookmarks = _bookmarkService.GetBookmarksByUserId(UserId);
 
-                return Ok(bookmarks);
+            return Ok(bookmarks);
+        }
+
+        [HttpPost]
+        [Route("/bookmark")]
+        public ActionResult AddBookmark([FromQuery] Guid productId)
+        {
+            Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
+
+
+            bool success = _bookmarkService.AddBookmark(UserId, productId);
+
+            if (success)
+            {
+                return Ok();
             }
 
-            [HttpPost]
-            public ActionResult AddBookmark([FromQuery] Guid productId)
-            {
-               
+            return BadRequest();
+        }
 
-                bool success = _bookmarkService.AddBookmark(GetUserId(), productId);
-
-                if (success)
-                {
-                    return Ok();
-                }
-
-                return BadRequest();
-            }
-
-            [HttpDelete]
-            public ActionResult DeleteBookmark([FromQuery] Guid productId)
-            {
+        [HttpDelete]
+        [Route("/bookmark")]
+        public ActionResult DeleteBookmark([FromQuery] Guid productId)
+        {
+            Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
             Bookmark bookmark = new Bookmark()
             {
                 ProductId = productId,
-                UserId = GetUserId()
+                UserId = UserId
             };
-                bool success = _bookmarkService.DeleteBookmark(bookmark);
+            bool success = _bookmarkService.DeleteBookmark(bookmark);
 
-                if (success)
-                {
-                    return Ok();
-                }
-
-                return BadRequest();
+            if (success)
+            {
+                return Ok();
             }
-        public Guid GetUserId()
-        {
-            Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
-            return UserId;
+
+            return BadRequest();
         }
+       
     }
-    }
+}

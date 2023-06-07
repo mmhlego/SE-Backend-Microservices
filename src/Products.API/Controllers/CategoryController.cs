@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace YourNamespace.Controllers
 {
-    [Route("api/[controller]")]
+   
     [ApiController]
     public class CategoryController : ControllerBase
     {

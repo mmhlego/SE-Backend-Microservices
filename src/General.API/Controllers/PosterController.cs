@@ -14,7 +14,6 @@ using General.API.Services;
 namespace General.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
     public class PosterController : ControllerBase
     {
         PosterService _poster;
