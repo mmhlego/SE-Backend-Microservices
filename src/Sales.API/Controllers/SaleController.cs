@@ -71,5 +71,14 @@ namespace Sales.API.Controllers
             _saleService.UpdateSaleAmount(id, amount);
             return Ok();
         }
+
+
+        [HttpPost]
+        [Authorize(Roles = "Admin, Seller , StoreKeeper , Owner")]
+        public ActionResult ActionSale(Guid sellerId, Guid productId, int amount, int initialPrice)
+        {   // should check if the seller is the same as loged in seller
+            _saleService.AddSale(sellerId, productId, amount, initialPrice);
+            return Ok();
+        }
     }
 }
