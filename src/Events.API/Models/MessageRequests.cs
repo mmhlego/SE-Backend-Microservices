@@ -8,7 +8,7 @@ namespace Events.API.Models
     public class MessageRequests
     {
         
-            public string Content { get; set; }
+            public string? Content { get; set; }
             public MessageTypes Type { get; set; }
             public Guid UserId { get; set; }
         
