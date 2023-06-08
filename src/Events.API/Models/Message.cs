@@ -1,10 +1,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using SharedModels;
-namespace Events.API.Models
-{
-    public class Message
-    {
+#pragma warning disable CS8618
+namespace Events.API.Models {
+    public class Message {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Content { get; set; }

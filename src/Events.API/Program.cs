@@ -2,6 +2,8 @@ using Events.API.Data;
 using Events.API.Services;
 using JwtAuthenticationManager;
 using Microsoft.EntityFrameworkCore;
+using Middleware;
+using Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,6 +25,14 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+using (var scope = app.Services.CreateScope()) {
+    var context = scope.ServiceProvider.GetRequiredService<EventsContext>();
+    context.Database.EnsureCreated();
+    context.EnsureCreatingMissingTables();
+}
+
+app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
 
 app.UseHttpsRedirection();
 

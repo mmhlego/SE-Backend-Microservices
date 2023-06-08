@@ -3,6 +3,8 @@ using General.API.Data;
 using General.API.Services;
 using JwtAuthenticationManager;
 using Microsoft.EntityFrameworkCore;
+using Middleware;
+using Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -24,11 +26,18 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
+if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+using (var scope = app.Services.CreateScope()) {
+    var context = scope.ServiceProvider.GetRequiredService<GeneralContext>();
+    context.Database.EnsureCreated();
+    context.EnsureCreatingMissingTables();
+}
+
+app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
 
 app.UseHttpsRedirection();
 
