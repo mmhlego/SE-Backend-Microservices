@@ -12,7 +12,10 @@ namespace Users.API.Services {
         public List<User> GetUsers() {
             return _context.Users.AsNoTracking().ToList();
         }
-
+        public void AddUser(User user) {
+            _context.Users.Add(user);
+            _context.SaveChanges();
+        }
         public User? GetUserById(Guid id) {
             // if (id == Guid.Empty) {
             //     throw new ArgumentNullException("User id is empty");
