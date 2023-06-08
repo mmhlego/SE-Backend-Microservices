@@ -8,5 +8,10 @@ namespace Products.API.Services {
         List<Subcategory> GetSubcategories(Guid categoryId);
         void AddSubcategory(Guid categoryId, string title);
         void UpdateSubcategory(Subcategory subcategory);
+        Category? GetCategoryById(Guid categoryId);
+        Subcategory? GetSubcategoryById(Guid subcategoryId);
+        List<Field>? GetFields(Guid subcategoryId);
+        void UpdateField(Guid fieldId, string title);
+        void AddField(Guid subcategoryId, string title);
     }
 }

@@ -28,5 +28,9 @@
     <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
     <None Remove="Microsoft.EntityFrameworkCore.Relational" />
     <None Remove="Microsoft.EntityFrameworkCore.Design" />
+    <None Remove="Models\Requests\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\Requests\" />
   </ItemGroup>
 </Project>

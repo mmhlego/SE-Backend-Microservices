@@ -32,18 +32,19 @@ namespace Events.API.Services {
             _context.SaveChanges();
         }
 
-        public void ReadMessage(Guid id) {
+        public bool ReadMessage(Guid id) {
             // if (Id == Guid.Empty)
             //     throw new ArgumentNullException("Invalid message id");
 
             var message = _context.Messages.FirstOrDefault(x => x.Id == id);
             if (message == null)
-                return;
+                return false;
             // throw new ArgumentNullException("Message doesn't exist");
 
             message.IsRead = true;
             _context.Messages.Update(message);
             _context.SaveChanges();
+            return true;
         }
     }
 }

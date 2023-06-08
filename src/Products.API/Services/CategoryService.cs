@@ -15,6 +15,32 @@ namespace Products.API.Services {
             return _context.Categories.ToList();
         }
 
+        public Subcategory? GetSubcategoryById(Guid subcategoryId)
+        {
+           return _context.Subcategories.FirstOrDefault(c => c.Id == subcategoryId);
+        }
+
+        public Category? GetCategoryById(Guid categoryId)
+        { 
+
+            return _context.Categories.FirstOrDefault(c => c.Id == categoryId);
+        }
+
+        public List<Subcategory> GetSubcategories(Guid categoryId)
+        {
+            // if (categoryId == default(Guid))
+            //     throw new ArgumentNullException("Category Id is required.");
+
+            // var subcategory = _context.Subcategories.Where(c => c.CategoryId == categoryId).ToList();
+
+            // if (subcategory == null)
+            //     throw new ArgumentException("Category not found.");
+
+            // return subcategory;
+            if (categoryId == default(Guid))
+                return _context.Subcategories.ToList();
+            return _context.Subcategories.Where(c => c.CategoryId == categoryId).ToList();
+        }
         public void AddCategory(string title, string iconName) {
             // if (string.IsNullOrEmpty(title))
             //     throw new ArgumentNullException("Category title is required.");
@@ -35,19 +61,6 @@ namespace Products.API.Services {
 
             _context.Categories.Update(category);
             _context.SaveChanges();
-        }
-
-        public List<Subcategory> GetSubcategories(Guid categoryId) {
-            // if (categoryId == default(Guid))
-            //     throw new ArgumentNullException("Category Id is required.");
-
-            // var subcategory = _context.Subcategories.Where(c => c.CategoryId == categoryId).ToList();
-
-            // if (subcategory == null)
-            //     throw new ArgumentException("Category not found.");
-
-            // return subcategory;
-            return _context.Subcategories.Where(c => c.CategoryId == categoryId).ToList();
         }
 
         public void AddSubcategory(Guid categoryId, string title) {
@@ -99,6 +112,34 @@ namespace Products.API.Services {
             // _context.Update(sub);
             _context.Update(subcategory);
             _context.SaveChanges();
+        }
+        public void UpdateField(Guid fieldId , string title)
+        {
+           var field = _context.Fields.FirstOrDefault(c => c.Id == fieldId);
+            if (field != null)
+            {
+                field.Title = title;
+                _context.Fields.Update(field);
+            }
+            
+            _context.SaveChanges();
+
+        }
+
+        public List<Field>? GetFields(Guid subcategoryId)
+        {
+            return _context.Fields.Where(c => c.SubcategoryId == subcategoryId).ToList();
+        }
+        public void AddField (Guid subcategoryId , string Title)
+        {
+            Field f = new Field()
+            {
+                SubcategoryId = subcategoryId,
+                Title = Title
+            };
+            _context.Fields.Add(f);
+            _context.SaveChanges();
+            
         }
     }
 }
