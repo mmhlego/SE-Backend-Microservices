@@ -24,13 +24,13 @@ namespace Sales.API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<List<Sale>> GetSales(Guid sellerId, Guid productId)
+        public ActionResult<List<Sale>> GetSales(Guid userId, Guid productId)
         {
             var sales = new List<Sale>();
 
-            if (sellerId != Guid.Empty)
+            if (userId != Guid.Empty)
             {
-                sales = _saleService.GetSalesBySellerId(sellerId);
+                sales = _saleService.GetSalesByUserId(userId);
             }
             else if (productId != Guid.Empty)
             {
@@ -52,8 +52,13 @@ namespace Sales.API.Controllers
         {
             Enum.TryParse(User.FindFirstValue(ClaimTypes.Role), out UserTypes role);
             Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
+            var sale = _saleService.GetSaleById(id);
+            if (sale == null)
+                return NotFound();
             if ( role == UserTypes.Seller)
-            { // check if the seller id is the same as user's seller id 
+            {
+                if (sale.UserId != UserId)
+                    return Forbid();
             }
             _saleService.UpdateSalePrice(id, newPrice);
             return Ok();
@@ -62,11 +67,16 @@ namespace Sales.API.Controllers
         [HttpPut("{id}/amount")]
         [Authorize(Roles = "Admin, Seller , StoreKeeper , Owner")]
         public ActionResult UpdateSaleAmount(Guid id, int amount)
-        {
+        {   
             Enum.TryParse(User.FindFirstValue(ClaimTypes.Role), out UserTypes role);
             Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
+            var sale = _saleService.GetSaleById(id);
+            if (sale == null)
+                return NotFound();
             if (role == UserTypes.Seller)
-            { // check if the seller id is the same as user's seller id 
+            {
+                if (sale.UserId != UserId)
+                    return Forbid();
             }
             _saleService.UpdateSaleAmount(id, amount);
             return Ok();
@@ -75,9 +85,16 @@ namespace Sales.API.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Admin, Seller , StoreKeeper , Owner")]
-        public ActionResult ActionSale(Guid sellerId, Guid productId, int amount, int initialPrice)
-        {   // should check if the seller is the same as loged in seller
-            _saleService.AddSale(sellerId, productId, amount, initialPrice);
+        public ActionResult AddSale(Guid userId, Guid productId, int amount, int initialPrice)
+        {
+            Enum.TryParse(User.FindFirstValue(ClaimTypes.Role), out UserTypes role);
+            Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
+            if (role == UserTypes.Seller)
+            {
+                if (userId != UserId)
+                    return Forbid();
+            }
+            _saleService.AddSale(userId, productId, amount, initialPrice);
             return Ok();
         }
     }

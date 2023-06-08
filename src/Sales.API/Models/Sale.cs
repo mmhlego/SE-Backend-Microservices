@@ -11,9 +11,9 @@ namespace Sales.API.Models {
         [ForeignKey("ProductId")]
         public Product Product { get; set; }
         public int Amount { get; set; } = 0;
-        public Guid SellerId { get; set; }
-        [ForeignKey("SellerId")]
-        public Seller Seller { get; set; }
+        public Guid UserId { get; set; }
+        [ForeignKey("UserId")]
+        public User user { get; set; }
 
         public List<SalePrice> Prices { get; set; }
     }

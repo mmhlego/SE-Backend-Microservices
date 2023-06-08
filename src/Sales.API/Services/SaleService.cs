@@ -21,16 +21,16 @@ namespace Sales.API.Services
             return _context.Sales.Where(s => s.ProductId == productId).ToList();
         }
 
-        public List<Sale> GetSalesBySellerId(Guid sellerId)
+        public List<Sale> GetSalesByUserId(Guid userId)
         {
-            return _context.Sales.Where(s => s.SellerId == sellerId).ToList();
+            return _context.Sales.Where(s => s.UserId == userId).ToList();
         }
 
-        public void AddSale(Guid sellerId, Guid productId, int amount, int initialPrice)
+        public void AddSale(Guid userId, Guid productId, int amount, int initialPrice)
         {
             var sale = new Sale()
             {    
-                SellerId = sellerId,
+                UserId = userId,
                 ProductId = productId,
                 Amount =amount
                 
@@ -74,6 +74,11 @@ namespace Sales.API.Services
                 _context.SalePrices.Add(salePrice);
                 _context.SaveChanges();
             }
+        }
+        public Sale? GetSaleById(Guid id)
+        {
+            return _context.Sales.FirstOrDefault(s => s.Id == id);
+
         }
     }
 
