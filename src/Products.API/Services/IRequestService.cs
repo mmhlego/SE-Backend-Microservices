@@ -3,7 +3,8 @@ using SharedModels;
 
 namespace Products.API.Services {
     public interface IRequestService {
-        List<ProductRequest> GetRequests(ProductRequestTypes type);
+        List<ProductRequest> GetRequests(ProductRequestTypes? type);
+        ProductRequest? GetRequestById(Guid id);
         Guid AddRequest(Guid sellerId, Product requestedProduct, ProductRequestTypes type);
         bool AcceptAddRequest(Guid requestId);
         bool MergeUpdateRequest(Guid requestId);

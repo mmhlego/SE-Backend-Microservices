@@ -29,7 +29,7 @@ namespace Sales.API.Controllers
             decimal discount = _paymentService.EvaluateDiscount(token);
 
             if (discount == 0)
-                return NotFound(StatusResponse.Failed("پیدا نشد."));
+                return NotFound(StatusResponse.Failed("کد تخفیف پیدا نشد."));
             if (discount == -1)
                 return NotFound(StatusResponse.Failed("تاریخ انقضا سپری شده."));
             if (discount < 0)
@@ -66,7 +66,7 @@ namespace Sales.API.Controllers
                 return Ok(StatusResponse.Success);
             }
 
-            return NotFound(StatusResponse.Failed("پیدا نشد."));
+            return NotFound(StatusResponse.Failed("کد تخفیف پیدا نشد."));
         }
 
 

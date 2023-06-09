@@ -13,13 +13,18 @@ namespace Products.API.Services {
             _context = context;
         }
 
-        public List<ProductRequest> GetRequests(ProductRequestTypes type) {
+        public List<ProductRequest> GetRequests(ProductRequestTypes? type) {
+            if (type == null)
+                return _context.ProductRequests.ToList();
             return _context.ProductRequests
                 .Include(pr => pr.Product)
                 .Where(pr => pr.Type == type)
                 .ToList();
         }
-
+        public ProductRequest? GetRequestById(Guid id)
+        {
+            return _context.ProductRequests.FirstOrDefault(p => p.Id == id);
+        }
         public Guid AddRequest(Guid sellerId, Product requestedProduct, ProductRequestTypes type) {
             switch (type) {
                 case ProductRequestTypes.AddRequest:
