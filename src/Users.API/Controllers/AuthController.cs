@@ -6,30 +6,38 @@ using SharedModels;
 using SharedModels.Requests;
 using Users.API.Services;
 
-namespace Users.API.Controllers {
+namespace Users.API.Controllers
+{
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController : ControllerBase {
+    public class AuthController : ControllerBase
+    {
         private readonly UsersService _users;
         private readonly JwtTokenHandler _jwt;
 
-        public AuthController(UsersService users, JwtTokenHandler jwt) {
+        public AuthController(UsersService users, JwtTokenHandler jwt)
+        {
             _users = users;
             _jwt = jwt;
         }
 
         [HttpPost]
         [Route("/login")]
-        public ActionResult<AuthenticationResponse> Login([FromBody] UserLogin loginRequest) {
-            if (!ModelState.IsValid) {
-                return BadRequest(ModelState);
+        public ActionResult<AuthenticationResponse> Login([FromBody] UserLogin loginRequest)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(StatusResponse.Failed("خطایی رخ داده."));
             }
             User? user = _users.GetUserByUsername(loginRequest.Username);
-            if (user == null) {
-                return NotFound(StatusResponse.Failed("User not found"));
+            if (user == null)
+            {
+                return NotFound(StatusResponse.Failed("کاربر پیدا نشد."));
 
-            } else if (user.Restricted) {
-                return Ok(StatusResponse.Failed("Restricted"));
+            }
+            else if (user.Restricted)
+            {
+                return Ok(StatusResponse.Failed("کاربر منع شده."));
             }
 
             return Ok(_jwt.GenerateJwtToken(user.Username, user.Id.ToString(), user.Type.ToString()));
@@ -37,18 +45,22 @@ namespace Users.API.Controllers {
 
         [HttpPost]
         [Route("/register")]
-        public ActionResult<AuthenticationResponse> RegisterUser([FromBody] UserRegister registerRequest) {
-            if (!ModelState.IsValid) {
+        public ActionResult<AuthenticationResponse> RegisterUser([FromBody] UserRegister registerRequest)
+        {
+            if (!ModelState.IsValid)
+            {
                 return StatusCode(StatusCodes.Status400BadRequest);
             }
 
             var username = _users.GetUserByUsername(registerRequest.Username);
 
-            if (username != null) {
-                return Ok(StatusResponse.Failed("Username already Exists."));
+            if (username != null)
+            {
+                return Ok(StatusResponse.Failed("نام کاربری از قبل وجود دارد."));
             }
 
-            User user = new User() {
+            User user = new User()
+            {
                 Id = Guid.NewGuid(),
                 Type = registerRequest.Type,
                 Username = registerRequest.Username,
@@ -65,31 +77,35 @@ namespace Users.API.Controllers {
 
             _users.AddUser(user);
 
-            if (registerRequest.Type == UserTypes.Seller) {
+            if (registerRequest.Type == UserTypes.Seller)
+            {
                 _users.AddSeller(user.Id);
             }
 
-            if (registerRequest.Type == UserTypes.Customer) {
+            if (registerRequest.Type == UserTypes.Customer)
+            {
                 _users.AddCustomer(user.Id);
             }
 
-            if (user == null) {
-                return Ok(StatusResponse.Failed(""));
-            }
+            //if (user == null) {
+            //    return Ok(StatusResponse.Failed(""));
+            //}
 
             return Ok(_jwt.GenerateJwtToken(user.Username, user.Id.ToString(), user.Type.ToString()));
         }
 
         [HttpPut]
         [Route("/changePassword")]
-        public ActionResult<StatusResponse> ChangePassword([FromBody] ChangePassword changePasswordRequest) {
+        public ActionResult<StatusResponse> ChangePassword([FromBody] ChangePassword changePasswordRequest)
+        {
             User? user = _users.GetUserByUsername(changePasswordRequest.Username);
 
             if (user == null)
-                return NotFound(StatusResponse.Failed("User not found"));
+                return NotFound(StatusResponse.Failed("کاربر پیدا نشد."));
 
-            if (user.Password != changePasswordRequest.OldPassword) {
-                return NotFound(StatusResponse.Failed("Invalid password"));
+            if (user.Password != changePasswordRequest.OldPassword)
+            {
+                return NotFound(StatusResponse.Failed("رمز نامعتبر است."));
 
             }
 

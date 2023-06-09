@@ -3,14 +3,17 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Chat.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sales.API.Models;
 using Sales.API.Models.Requests;
 using Sales.API.Services;
 
-namespace Sales.API.Controllers {
+namespace Sales.API.Controllers
+{
     [ApiController]
+    [Route("api/[controller]")]
     public class DiscountController : ControllerBase
     {
         private readonly PaymentService _paymentService;
@@ -22,15 +25,15 @@ namespace Sales.API.Controllers {
 
         [HttpPost("evaluate")]
         public ActionResult<decimal> EvaluateDiscount([FromBody] string token)
-        {   
+        {
             decimal discount = _paymentService.EvaluateDiscount(token);
-            
+
             if (discount == 0)
-                return NotFound();
-            if(discount == -1)
-                return StatusCode(410, "The discount token has expired");
+                return NotFound(StatusResponse.Failed("پیدا نشد."));
+            if (discount == -1)
+                return NotFound(StatusResponse.Failed("تاریخ انقضا سپری شده."));
             if (discount < 0)
-                return BadRequest();
+                return BadRequest(StatusResponse.Failed("خطایی رخ داده."));
             return Ok(discount);
         }
 
@@ -46,7 +49,7 @@ namespace Sales.API.Controllers {
         [HttpPost("discountTokens")]
         [Authorize(Roles = "Admin , Owner")]
         public ActionResult<DiscountToken> CreateDiscountToken([FromBody] PostDiscountToken discountToken)
-        {   
+        {
             DiscountToken createdToken = _paymentService.CreateDiscountToken(discountToken);
 
             return Ok(createdToken);
@@ -54,18 +57,18 @@ namespace Sales.API.Controllers {
 
         [HttpDelete("discountTokens/{id}")]
         [Authorize(Roles = "Admin , Owner")]
-        public ActionResult DeleteDiscountToken(Guid id)
+        public ActionResult<StatusResponse> DeleteDiscountToken(Guid id)
         {
             bool success = _paymentService.DeleteDiscountToken(id);
 
             if (success)
             {
-                return Ok();
+                return Ok(StatusResponse.Success);
             }
 
-            return NotFound();
+            return NotFound(StatusResponse.Failed("پیدا نشد."));
         }
 
-   
-        }
+
+    }
 }

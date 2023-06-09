@@ -10,10 +10,12 @@ using Microsoft.AspNetCore.Authorization;
 using SharedModels;
 using System.Security.Claims;
 using General.API.Services;
+using Chat.API.Models;
 
 namespace General.API.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public class PosterController : ControllerBase
     {
         PosterService _poster;
@@ -38,20 +40,20 @@ namespace General.API.Controllers
         [HttpPost]
         [Route("posters/")]
         [Authorize(Roles = "Admin")]
-        public IActionResult PostPosters(PosterPost request)
+        public ActionResult<StatusResponse> PostPosters(PosterPost request)
         {
             _poster.AddPoster(request.Title, request.Type, request.ImageUrl, request.TargetUrl);
-            return Ok();
+            return Ok(StatusResponse.Success);
         }
 
         [HttpPut]
         [Route("posters/{id}")]
         [Authorize(Roles = "Admin")]
-        public IActionResult PutPoster(Guid posterId, [FromBody] PosterPost request)
+        public ActionResult<StatusResponse> PutPoster(Guid posterId, [FromBody] PosterPost request)
         {
             Poster? poster = _poster.GetPosterById(posterId);
             if (poster == null)
-                return StatusCode(StatusCodes.Status404NotFound);
+                return NotFound(StatusResponse.Failed("پوستر مورد نظر پیدا نشد."));
 
             poster.Id = posterId;
             poster.Title = request.Title;
@@ -60,19 +62,19 @@ namespace General.API.Controllers
             poster.Type = request.Type;
 
             _poster.UpdatePoster(poster);
-            return Ok();
+            return Ok(StatusResponse.Success);
         }
 
         [HttpDelete]
         [Route("posters/{id}")]
         [Authorize(Roles = "Admin")]
-        public IActionResult DeletePoster(Guid posterId)
+        public ActionResult<StatusResponse> DeletePoster(Guid posterId)
         {
             Poster? poster = _poster.GetPosterById(posterId);
 
             if (poster == null)
             {
-                return BadRequest();
+                return NotFound(StatusResponse.Failed("پوستر مورد نظر پیدا نشد."));
             }
             _poster.DeletePoster(posterId);
             return Ok(poster);
