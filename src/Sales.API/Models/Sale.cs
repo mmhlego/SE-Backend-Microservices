@@ -14,7 +14,7 @@ namespace Sales.API.Models {
         public Guid UserId { get; set; }
         [ForeignKey("UserId")]
         public User user { get; set; }
-
+        public decimal Price { get; set; }
         public List<SalePrice> Prices { get; set; }
     }
 }

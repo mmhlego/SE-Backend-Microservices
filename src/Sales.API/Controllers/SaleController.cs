@@ -100,5 +100,13 @@ namespace Sales.API.Controllers
             _saleService.AddSale(userId, productId, amount, initialPrice);
             return Ok(StatusResponse.Success);
         }
+
+
+        [HttpGet]
+        [Route("getproductIds")]
+        public ActionResult<List<Guid>> ProductsFtilter([FromQuery] decimal? priceFrom, [FromQuery] decimal? priceTo)
+        { 
+            return _saleService.FilterProductsByPrice(priceFrom, priceTo);
+        }
     }
 }
