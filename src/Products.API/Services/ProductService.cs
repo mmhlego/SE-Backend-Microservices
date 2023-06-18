@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Products.API.Data;
 using Products.API.Models;
 using SharedModels;
@@ -15,27 +16,19 @@ namespace Products.API.Services {
         }
 
         public Product? GetProductById(Guid id) {
-            // var product = _context.Products.FirstOrDefault(p => p.RowId == id);
-            // if (product == null) {
-            //     throw new ArgumentException("Product not found");
-            // }
-            // return product;
+           
             return _context.Products.FirstOrDefault(p => p.RowId == id);
         }
-
-        public void AddProduct(string name, string description, Guid subCategory, ProductStates state) {
-            // var subCat = _context.Subcategories.FirstOrDefault(sc => sc.Id == subCategory);
-            // if (subCat == null) {
-            // throw an exception if the subcategory doesn't exist
-            // throw new ArgumentException("Subcategory not found");
-
-            if (!_context.Subcategories.Any(sc => sc.Id == subCategory)) {
+        
+        public void AddProduct(string name, string description, Guid subCategoryId, ProductStates state) {
+            
+            if (!_context.Subcategories.Any(sc => sc.Id == subCategoryId)) {
                 return;
             }
 
             var product = new Product {
                 ProductId = Guid.NewGuid(),
-                Subcategory = subCategory,
+                SubcategoryId = subCategoryId,
                 Name = name,
                 Description = description,
                 State = state
@@ -96,6 +89,50 @@ namespace Products.API.Services {
             }
 
             _context.SaveChanges();
+        }
+        public List<Product> SearchProductsByName(string searchQuery , List<Product> products)
+        { 
+            List<Product> matchedProducts = products.Where(p => IsNameMatch(p.Name, searchQuery)).ToList();
+
+            return matchedProducts;
+        }
+        private bool IsNameMatch(string productName, string searchQuery)
+        {
+            string productNameLower = productName.ToLower();
+            string searchQueryLower = searchQuery.ToLower();
+
+            if (productNameLower.Contains(searchQueryLower))
+                return true;
+
+            int distance = CalculateLevenshteinDistance(searchQueryLower, productNameLower);
+            int threshold = Math.Max(productNameLower.Length / 2, 1);
+
+            return distance <= threshold;
+        }
+        private int CalculateLevenshteinDistance(string source, string target)
+        {
+            int sourceLength = source.Length;
+            int targetLength = target.Length;
+            int[,] distanceMatrix = new int[sourceLength + 1, targetLength + 1];
+
+            for (int i = 0; i <= sourceLength; i++)
+                distanceMatrix[i, 0] = i;
+
+            for (int j = 0; j <= targetLength; j++)
+                distanceMatrix[0, j] = j;
+
+            for (int i = 1; i <= sourceLength; i++)
+            {
+                for (int j = 1; j <= targetLength; j++)
+                {
+                    int cost = source[i - 1] == target[j - 1] ? 0 : 1;
+                    distanceMatrix[i, j] = Math.Min(
+                        Math.Min(distanceMatrix[i - 1, j] + 1, distanceMatrix[i, j - 1] + 1),
+                        distanceMatrix[i - 1, j - 1] + cost);
+                }
+            }
+
+            return distanceMatrix[sourceLength, targetLength];
         }
     }
 }

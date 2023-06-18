@@ -9,46 +9,53 @@ namespace General.API.Services {
             _context = context;
         }
 
-        public List<Reaction> GetLikesByProductId(Guid productId) {
-            // try {
-            return _context.Reactions
-                .Where(r => r.TargetId == productId && r.Type == ReactionTypes.ProductLike)
-                .ToList();
-            // } catch (InvalidOperationException ex) {
-            //     throw new InvalidOperationException("The productId is invalid", ex);
-            // }
+        //public List<Reaction> GetLikesByProductId(Guid productId) {
+        //    // try {
+        //    return _context.Reactions
+        //        .Where(r => r.TargetId == productId && r.Type == ReactionTypes.ProductLike)
+        //        .ToList();
+        //    // } catch (InvalidOperationException ex) {
+        //    //     throw new InvalidOperationException("The productId is invalid", ex);
+        //    // }
+        //}
+
+        //public List<Reaction> GetLikesBySellerId(Guid sellerId) {
+        //    // try {
+        //    return _context.Reactions
+        //        .Where(r => r.TargetId == sellerId && r.Type == ReactionTypes.SellerLike)
+        //        .ToList();
+        //    // } catch (InvalidOperationException ex) {
+        //    //     throw new InvalidOperationException("The sellerId is invalid", ex);
+        //    // }
+        //}
+
+        //public List<Reaction> GetLikesByCommentId(Guid commentId) {
+        //    // try {
+        //    return _context.Reactions
+        //        .Where(r => r.TargetId == commentId && r.Type == ReactionTypes.CommentLike)
+        //        .ToList();
+        //    // } catch (InvalidOperationException ex) {
+        //    //     throw new InvalidOperationException("The commentId is invalid", ex);
+        //    // }
+        //}
+        public int GetLikes(Guid targetId, ReactionTypes type)
+        {
+            return _context.Reactions.Count(r => r.TargetId == targetId && r.Type == type && r.Like);
         }
 
-        public List<Reaction> GetLikesBySellerId(Guid sellerId) {
-            // try {
-            return _context.Reactions
-                .Where(r => r.TargetId == sellerId && r.Type == ReactionTypes.SellerLike)
-                .ToList();
-            // } catch (InvalidOperationException ex) {
-            //     throw new InvalidOperationException("The sellerId is invalid", ex);
-            // }
+        public int GetDislikes(Guid targetId, ReactionTypes type)
+        {
+            return _context.Reactions.Count(r => r.TargetId == targetId && r.Type == type && !r.Like);
         }
 
-        public List<Reaction> GetLikesByCommentId(Guid commentId) {
-            // try {
-            return _context.Reactions
-                .Where(r => r.TargetId == commentId && r.Type == ReactionTypes.CommentLike)
-                .ToList();
-            // } catch (InvalidOperationException ex) {
-            //     throw new InvalidOperationException("The commentId is invalid", ex);
-            // }
-        }
-
-        public bool AddReaction(Guid customerId, Guid targetId, ReactionTypes type, bool like) {
-            // try {
-            // Check if reaction from customerId exists
-            if (_context.Reactions.Any(r => r.UserId == customerId && r.TargetId == targetId && r.Type == type)) {
-                // throw new ArgumentNullException("The reaction from the customerId already exists");
+        public bool AddReaction(Guid userId, Guid targetId, ReactionTypes type, bool like) {
+           
+            if (_context.Reactions.Any(r => r.UserId == userId && r.TargetId == targetId && r.Type == type)) {
                 return false;
             }
 
             _context.Reactions.Add(new Reaction {
-                UserId = customerId,
+                UserId = userId,
                 TargetId = targetId,
                 Type = type,
                 Like = like
@@ -57,29 +64,20 @@ namespace General.API.Services {
             _context.SaveChanges();
             return true;
 
-            // } catch (ArgumentNullException ex) {
-            //     throw new ArgumentNullException("An error has occurred while trying to add the reaction", ex);
-            // }
+       
         }
 
-        public bool DeleteReaction(Reaction reaction) {
-            // try {
-            // Check if reaction exists
-            // var r = _context.Reactions.SingleOrDefault(r => r.Id == reaction.Id);
-            // if (r == null) {
-            //     throw new ArgumentNullException("The reaction doesn't exist");
-            // }
+        public bool DeleteReaction(Guid customerId, Guid targetId, ReactionTypes type)
+        {
+            var reaction = _context.Reactions.FirstOrDefault(r => r.UserId == customerId && r.TargetId == targetId && r.Type == type);
+            if (reaction != null)
+            {
+                _context.Reactions.Remove(reaction);
+                _context.SaveChanges();
+                return true;
+            }
 
-            if (!_context.Reactions.Any(r => r.Id == reaction.Id))
-                return false;
-
-            _context.Reactions.Remove(reaction);
-            _context.SaveChanges();
-
-            return true;
-            // } catch (ArgumentNullException ex) {
-            //     throw new ArgumentNullException("An error has occurred while trying to delete the reaction", ex);
-            // }
+            return false;
         }
     }
 }

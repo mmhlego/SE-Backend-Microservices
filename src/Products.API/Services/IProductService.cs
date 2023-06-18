@@ -9,5 +9,6 @@ namespace Products.API.Services {
         void UpdateProduct(Product updatedProduct);
         List<ProductImage> GetProductImages(Guid productId);
         void UpdateProductImages(Guid productId, List<string> ImageUrls);
+        List<Product> SearchProductsByName(string searchQuery, List<Product> products);
     }
 }

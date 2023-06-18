@@ -6,7 +6,7 @@ namespace SharedModels {
         [Key]
         public Guid RowId { get; set; } = Guid.NewGuid();
         public Guid ProductId { get; set; }
-        public Guid Subcategory { get; set; }
+        public Guid SubcategoryId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; } = "";
         public ProductStates State { get; set; }

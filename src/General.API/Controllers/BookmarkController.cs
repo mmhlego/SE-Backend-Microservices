@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Chat.API.Models;
 using General.API.Data;
 using General.API.Models;
 using General.API.Services;
@@ -12,9 +13,10 @@ using Microsoft.EntityFrameworkCore;
 namespace General.API.Controllers
 {
     [ApiController]
+    [Route("api/[controller]")]
     public class BookmarkController : ControllerBase
     {
-       private readonly BookmarkService _bookmarkService;
+        private readonly BookmarkService _bookmarkService;
 
         public BookmarkController(BookmarkService bookmarkService)
         {
@@ -33,7 +35,7 @@ namespace General.API.Controllers
 
         [HttpPost]
         [Route("/bookmark")]
-        public ActionResult AddBookmark([FromQuery] Guid productId)
+        public ActionResult<StatusResponse> AddBookmark([FromQuery] Guid productId)
         {
             Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
 
@@ -42,15 +44,15 @@ namespace General.API.Controllers
 
             if (success)
             {
-                return Ok();
+                return Ok(StatusResponse.Success);
             }
 
-            return BadRequest();
+            return BadRequest(StatusResponse.Failed("در اضافه کردن نشانک خطایی رخ داد."));
         }
 
         [HttpDelete]
         [Route("/bookmark")]
-        public ActionResult DeleteBookmark([FromQuery] Guid productId)
+        public ActionResult<StatusResponse> DeleteBookmark([FromQuery] Guid productId)
         {
             Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
             Bookmark bookmark = new Bookmark()
@@ -62,11 +64,11 @@ namespace General.API.Controllers
 
             if (success)
             {
-                return Ok();
+                return Ok(StatusResponse.Success);
             }
 
-            return BadRequest();
+            return BadRequest(StatusResponse.Failed("در حذف کردن نشانک خطایی رخ داد."));
         }
-       
+
     }
 }

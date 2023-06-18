@@ -13,5 +13,6 @@ namespace Sales.API.Services {
         void AddSale(Guid userId, Guid productId, int amount, int initialPrice);
         void UpdateSaleAmount(Guid saleId, int amount);
         void UpdateSalePrice(Guid saleId, int newPrice);
+        List<Guid> FilterProductsByPrice(decimal? priceFrom, decimal? priceTo);
     }
-}
+};

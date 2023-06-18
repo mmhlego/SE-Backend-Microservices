@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 using Sales.API.Data;
 using Sales.API.Models;
 
@@ -32,7 +33,8 @@ namespace Sales.API.Services
             {    
                 UserId = userId,
                 ProductId = productId,
-                Amount =amount
+                Amount =amount,
+                Price = initialPrice
                 
 
             };
@@ -63,6 +65,7 @@ namespace Sales.API.Services
             var sale = _context.Sales.Find(saleId);
             if (sale != null)
             {
+                sale.Price = newPrice;
                 SalePrice salePrice = new SalePrice()
                 {
                     Price = newPrice,
@@ -72,8 +75,34 @@ namespace Sales.API.Services
 
                 };
                 _context.SalePrices.Add(salePrice);
+                _context.Sales.Update(sale);
                 _context.SaveChanges();
             }
+        }
+        public List<Guid> FilterProductsByPrice(decimal? priceFrom, decimal? priceTo)
+        {
+            //var saleprices = _context.SalePrices.ToList();
+            //if (priceFrom != null)
+            //    saleprices = saleprices.Where(c => c.Price >= priceFrom).ToList();
+            //if (priceTo != null)
+            //    saleprices = saleprices.Where(c => c.Price < priceTo).ToList();
+            //List<Guid> productIds = saleprices.Select(s =>
+            //{
+            //    var product = _context.Sales.FirstOrDefault(c => c.Id == s.SaleId)?.Product;
+            //    if (product != null)
+            //        return product.ProductId;
+            //    else
+            //        return Guid.Empty;
+            //}).Where(p => p != Guid.Empty).ToList();
+            //return productIds;
+            var sales = _context.Sales.ToList();
+            if (priceFrom != null)
+                sales = sales.Where(c => c.Price >= priceFrom).ToList();
+            if (priceTo != null)
+                sales = sales.Where(c => c.Price < priceTo).ToList();
+            List<Guid> productIds = sales.Select(c => c.ProductId).ToList();
+            return (productIds);
+
         }
         public Sale? GetSaleById(Guid id)
         {

@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Chat.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sales.API.Models;
@@ -13,7 +14,7 @@ using SharedModels;
 namespace Sales.API.Controllers
 {
     [ApiController]
-    [Route("sales")]
+    [Route("api/[controller]")]
     public class SaleController : ControllerBase
     {
         private readonly ISaleService _saleService;
@@ -24,6 +25,7 @@ namespace Sales.API.Controllers
         }
 
         [HttpGet]
+        [Route("sales")]
         public ActionResult<List<Sale>> GetSales(Guid userId, Guid productId)
         {
             var sales = new List<Sale>();
@@ -39,63 +41,72 @@ namespace Sales.API.Controllers
 
             if (sales.Count == 0)
             {
-                return NotFound();
+                return NotFound(StatusResponse.Failed("پیدا نشد."));
             }
 
             return Ok(sales);
         }
 
-        [HttpPut("{id}/price")]
+        [HttpPut("sales/{id}/price")]
         [Authorize(Roles = "Admin, Seller , StoreKeeper , Owner")]
-        public ActionResult UpdateSalePrice(Guid id, int newPrice)
+        public ActionResult<StatusResponse> UpdateSalePrice(Guid id, int newPrice)
 
         {
             Enum.TryParse(User.FindFirstValue(ClaimTypes.Role), out UserTypes role);
             Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
             var sale = _saleService.GetSaleById(id);
             if (sale == null)
-                return NotFound();
-            if ( role == UserTypes.Seller)
+                return NotFound(StatusResponse.Failed("پیدا نشد."));
+            if (role == UserTypes.Seller)
             {
                 if (sale.UserId != UserId)
-                    return Forbid();
+                    return Unauthorized(StatusResponse.Failed("اجازه دسترسی ندارید."));
             }
             _saleService.UpdateSalePrice(id, newPrice);
-            return Ok();
+            return Ok(StatusResponse.Success);
         }
 
-        [HttpPut("{id}/amount")]
+        [HttpPut("sales/{id}/amount")]
         [Authorize(Roles = "Admin, Seller , StoreKeeper , Owner")]
-        public ActionResult UpdateSaleAmount(Guid id, int amount)
-        {   
+        public ActionResult<StatusResponse> UpdateSaleAmount(Guid id, int amount)
+        {
             Enum.TryParse(User.FindFirstValue(ClaimTypes.Role), out UserTypes role);
             Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
             var sale = _saleService.GetSaleById(id);
             if (sale == null)
-                return NotFound();
+                return NotFound(StatusResponse.Failed("پیدا نشد."));
             if (role == UserTypes.Seller)
             {
                 if (sale.UserId != UserId)
-                    return Forbid();
+                    return Unauthorized(StatusResponse.Failed("اجازه دسترسی ندارید"));
             }
             _saleService.UpdateSaleAmount(id, amount);
-            return Ok();
+            return Ok(StatusResponse.Success);
         }
 
 
         [HttpPost]
+        [Route("sales")]
         [Authorize(Roles = "Admin, Seller , StoreKeeper , Owner")]
-        public ActionResult AddSale(Guid userId, Guid productId, int amount, int initialPrice)
+        public ActionResult<StatusResponse> AddSale(Guid userId, Guid productId, int amount, int initialPrice)
         {
             Enum.TryParse(User.FindFirstValue(ClaimTypes.Role), out UserTypes role);
             Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
             if (role == UserTypes.Seller)
             {
                 if (userId != UserId)
-                    return Forbid();
+                    return Unauthorized(StatusResponse.Failed("اجازه دسترسی ندارید."));
             }
             _saleService.AddSale(userId, productId, amount, initialPrice);
-            return Ok();
+            return Ok(StatusResponse.Success);
+        }
+
+
+        [HttpGet]
+        [Route("getproductIds")]
+        public ActionResult<List<Guid>> ProductsFtilter([FromQuery] decimal? priceFrom, [FromQuery] decimal? priceTo)
+        { 
+            return _saleService.FilterProductsByPrice(priceFrom, priceTo);
         }
     }
 }
