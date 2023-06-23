@@ -5,8 +5,8 @@ namespace SharedModels {
         public int TotalPages { get; set; }
         public List<T> Data { get; set; } = new List<T>();
 
-        public static Pagination<T> Paginate(T[] data, int perPage, int page) {
-            var count = data.Length;
+        public static Pagination<T> Paginate(List<T> data, int perPage, int page) {
+            var count = data.Count;
             perPage = Math.Max(1, perPage);
             var totalPages = (count + perPage - 1) / perPage;
             page = Math.Max(1, Math.Min(page, totalPages));
