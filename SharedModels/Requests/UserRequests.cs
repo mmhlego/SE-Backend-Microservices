@@ -16,6 +16,7 @@ namespace SharedModels.Requests {
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
     }
+
     public class ChangePassword {
         public string Username { get; set; }
         public string OldPassword { get; set; }

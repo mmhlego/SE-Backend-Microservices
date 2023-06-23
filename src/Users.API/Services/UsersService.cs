@@ -2,57 +2,37 @@ using Microsoft.EntityFrameworkCore;
 using SharedModels;
 using Users.API.Data;
 
-namespace Users.API.Services {
-    public class UsersService : IUsersService {
-        private readonly UsersContext _context;
-        public UsersService(UsersContext context) {
+namespace Users.API.Services
+{
+    public class UsersService : IUsersService
+    {
+        private readonly UserServive _context;
+        public UsersService(UserServive context)
+        {
             _context = context;
         }
 
-        public List<User> GetUsers() {
+        public List<User> GetUsers()
+        {
             return _context.Users.AsNoTracking().ToList();
         }
-        public void AddUser(User user) {
+        public void AddUser(User user)
+        {
             _context.Users.Add(user);
             _context.SaveChanges();
         }
-        public User? GetUserById(Guid id) {
-            // if (id == Guid.Empty) {
-            //     throw new ArgumentNullException("User id is empty");
-            // }
-
-            // var user = _context.Users.Find(id);
-            // if (user == null) {
-            //     throw new ArgumentException("User not found");
-            // }
-
+        public User? GetUserById(Guid id)
+        {
             return _context.Users.Find(id);
         }
 
-        public User? GetUserByUsername(string username) {
-            // if (string.IsNullOrWhiteSpace(username)) {
-            //     throw new ArgumentNullException("Username is empty");
-            // }
-
-            // var user = _context.Users.SingleOrDefault(u => u.Username == username);
-            // if (user == null) {
-            //     throw new ArgumentException("User not found");
-            // }
-
+        public User? GetUserByUsername(string username)
+        {
             return _context.Users.FirstOrDefault(u => u.Username == username);
         }
 
-        public void UpdateUser(User user) {
-            // var u = _context.Users.FirstOrDefault(u => u.Id == user.Id);
-
-            // if (user == null) {
-            //     throw new ArgumentNullException("User is null");
-            // }
-            // if (u == null) {
-            // throw new ArgumentNullException("User not found");
-            // return;
-            // }
-
+        public void UpdateUser(User user)
+        {
             if (!_context.Users.Any(u => u.Id == user.Id))
                 return;
 
@@ -60,38 +40,30 @@ namespace Users.API.Services {
             _context.SaveChanges();
         }
 
-        public List<Customer> GetCustomers() {
+        public List<Customer> GetCustomers()
+        {
             return _context.Customers.AsNoTracking().ToList();
         }
 
-        public Customer? GetCustomerByUserId(Guid userId) {
-            // if (userId == Guid.Empty) {
-            //     throw new ArgumentNullException("User id is empty");
-            // }
-
-            // var customer = _context.Customers.SingleOrDefault(c => c.UserId == userId);
-            // if (customer == null) {
-            //     throw new ArgumentException("Customer not found");
-            // }
-
+        public Customer? GetCustomerByUserId(Guid userId)
+        {
             return _context.Customers.FirstOrDefault(c => c.UserId == userId);
         }
 
-        public void AddCustomer(Guid userId) {
-            // if (userId == Guid.Empty) {
-            //     throw new ArgumentNullException("User id is empty");
-            // }
+        public void AddCustomer(Guid userId)
+        {
             var user = _context.Users.FirstOrDefault(u => u.Id == userId);
 
-            if (user == null) {
-                // throw new Exception("User Not Found");
+            if (user == null)
+            {
                 return;
             }
 
             user.Type = UserTypes.Customer;
             _context.Users.Update(user);
 
-            var customer = new Customer {
+            var customer = new Customer
+            {
                 UserId = userId
             };
 
@@ -99,43 +71,59 @@ namespace Users.API.Services {
             _context.SaveChanges();
         }
 
-        public void UpdateCustomer(Customer customer) {
-            // if (customer == null) {
-            //     throw new ArgumentNullException("Customer is null");
-            // }
+        public void UpdateCustomer(Customer customer)
+        {
             var check = _context.Customers.FirstOrDefault(c => c.Id == customer.Id);
             if (check == null)
                 return;
-            // throw new ArgumentException("Customer not found");
-            // check.Balance = customer.Balance;
 
             _context.Customers.Update(customer);
             _context.SaveChanges();
         }
+        public List<CustomerAddress> GetCustomerAddresses(Guid userId)
+        {
+            return _context.CustomerAddresses.AsNoTracking().Where(cA => cA.UserId == userId).ToList();
+        }
+        public void AddAddress(CustomerAddress address)
+        {
+            _context.CustomerAddresses.Add(address);
+            _context.SaveChanges();
+        }
+        public void UpdateAddress(CustomerAddress address)
+        {
+            if (_context.CustomerAddresses.Any(a => a.Id == address.Id))
+                return;
 
-        public List<Seller> GetSellers() {
+            _context.CustomerAddresses .Update(address);
+            _context.SaveChanges();
+        }
+        public void DeleteAddress(CustomerAddress address)
+        {
+            if (_context.CustomerAddresses.Any(a => a.Id == address.Id))
+                return;
+
+            _context.CustomerAddresses.Remove(address);
+            _context.SaveChanges();
+        }
+        public CustomerAddress? GetAddressById(Guid addressId)
+        {
+            return _context.CustomerAddresses.FirstOrDefault(s => s.UserId == addressId); ;
+        }
+        public List<Seller> GetSellers()
+        {
             return _context.Sellers.AsNoTracking().ToList();
         }
 
-        public Seller? GetSellerByUserId(Guid userId) {
-            // if (userId == Guid.Empty) {
-            //     throw new ArgumentNullException("User id is empty");
-            // }
-
-            // var seller = _context.Sellers.SingleOrDefault(s => s.UserId == userId);
-            // if (seller == null) {
-            //     throw new Exception("Seller not found");
-            // }
-
+        public Seller? GetSellerByUserId(Guid userId)
+        {
             return _context.Sellers.FirstOrDefault(s => s.UserId == userId); ;
         }
 
-        public void AddSeller(Guid userId) {
-            // if (userId == Guid.Empty) {
-            //     throw new ArgumentNullException("User id is empty");
-            // }
+        public void AddSeller(Guid userId)
+        {
             var user = _context.Users.SingleOrDefault(u => u.Id == userId);
-            if (user == null) {
+            if (user == null)
+            {
                 throw new Exception("User Not Found");
             }
             user.Type = UserTypes.Seller;
@@ -145,17 +133,8 @@ namespace Users.API.Services {
             _context.SaveChanges();
         }
 
-        public void UpdateSeller(Seller seller) {
-            // var s = _context.Sellers.SingleOrDefault(s => s.Id == seller.Id);
-
-            // if (seller == null) {
-            //     throw new ArgumentNullException("Seller is null");
-            // }
-
-            // if (s == null) {
-            //     throw new ArgumentNullException("Seller not found");
-            // }
-
+        public void UpdateSeller(Seller seller)
+        {
             if (_context.Sellers.Any(s => s.Id == seller.Id))
                 return;
 
