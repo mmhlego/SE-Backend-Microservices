@@ -12,10 +12,10 @@ namespace Users.API.Controllers
     [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly UsersService _users;
+        private readonly IUsersService _users;
         private readonly JwtTokenHandler _jwt;
 
-        public AuthController(UsersService users, JwtTokenHandler jwt)
+        public AuthController(IUsersService users, JwtTokenHandler jwt)
         {
             _users = users;
             _jwt = jwt;

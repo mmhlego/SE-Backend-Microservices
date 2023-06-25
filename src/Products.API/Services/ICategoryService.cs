@@ -13,5 +13,6 @@ namespace Products.API.Services {
         List<Field>? GetFields(Guid subcategoryId);
         void UpdateField(Guid fieldId, string title);
         void AddField(Guid subcategoryId, string title);
+        Field GetFieldById(Guid id);
     }
 }

@@ -8,12 +8,10 @@ namespace Sales.API.Models {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
         public Guid ProductId { get; set; }
-        [ForeignKey("ProductId")]
-        public Product Product { get; set; }
+      
         public int Amount { get; set; } = 0;
         public Guid UserId { get; set; }
-        [ForeignKey("UserId")]
-        public User user { get; set; }
+
         public decimal Price { get; set; }
         public List<SalePrice> Prices { get; set; }
     }

@@ -2,7 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Products.API.Models;
 using Products.API.Services;
 using Chat.API.Models;
-namespace Products.API.Data {
+namespace Products.API.Controllers
+{
     [ApiController]
     [Route("api/[controller]")]
     public class RequestController : ControllerBase

@@ -6,6 +6,7 @@ namespace Users.API.Services {
         User? GetUserById(Guid id);
         User? GetUserByUsername(string username);
         void UpdateUser(User user);
+        void AddUser(User user);
 
         List<Customer> GetCustomers();
         Customer? GetCustomerByUserId(Guid userId);

@@ -13,6 +13,6 @@ namespace Sales.API.Models {
         [ForeignKey("SaleId")]
         public Sale Sale { get; set; }
 
-        public List<OrderItem> OrderItems { get; set; }
+        
     }
 }

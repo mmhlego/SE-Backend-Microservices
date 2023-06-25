@@ -25,6 +25,10 @@ namespace Products.API.Services {
 
             return _context.Categories.FirstOrDefault(c => c.Id == categoryId);
         }
+        public Field? GetFieldById(Guid id)
+        {
+            return _context.Fields.FirstOrDefault(i => i.Id == id);
+        }
 
         public List<Subcategory> GetSubcategories(Guid categoryId)
         {
