@@ -10,8 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<JwtTokenHandler>();
 builder.Services.AddJwtAuthentication();
 
-builder.Services.AddDbContext<UsersContext>(options => {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
+builder.Services.AddDbContext<UsersContext>(options =>
+{
+	options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
 });
 
 builder.Services.AddScoped<IUsersService, UsersService>();
@@ -22,15 +23,19 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment()) {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+if (app.Environment.IsDevelopment())
+{
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
 
-using (var scope = app.Services.CreateScope()) {
-    var context = scope.ServiceProvider.GetRequiredService<UsersContext>();
-    context.Database.EnsureCreated();
-    context.EnsureCreatingMissingTables();
+Console.WriteLine(builder.Configuration.GetConnectionString("SqlServer"));
+
+using (var scope = app.Services.CreateScope())
+{
+	var context = scope.ServiceProvider.GetRequiredService<UsersContext>();
+	context.Database.EnsureCreated();
+	context.EnsureCreatingMissingTables();
 }
 
 app.UseMiddleware(typeof(ExceptionHandlingMiddleware));

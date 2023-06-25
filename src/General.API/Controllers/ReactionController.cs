@@ -11,61 +11,61 @@ using General.API.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace General.API.Controllers {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class ReactionController : ControllerBase
-    {
-        private readonly IReactionService _reactionService;
+namespace General.API.Controllers
+{
+	[ApiController]
+	[Route("api/[controller]")]
+	public class ReactionController : ControllerBase
+	{
+		private readonly IReactionService _reactionService;
 
-        public ReactionController(IReactionService reactionService)
-        {
-            _reactionService = reactionService;
-        }
+		public ReactionController(IReactionService reactionService)
+		{
+			_reactionService = reactionService;
+		}
 
-        [HttpGet("likes")]
-        public ActionResult<ReactionCount> GetLikes(Guid targetId, ReactionTypes type)
-        {  
+		[HttpGet("likes")]
+		public ActionResult<ReactionCount> GetLikes([FromQuery] Guid targetId, [FromQuery] ReactionTypes type)
+		{
 
-            var likes = _reactionService.GetLikes(targetId, type);
-            var dislikes = _reactionService.GetDislikes(targetId, type);
+			var likes = _reactionService.GetLikes(targetId, type);
+			var dislikes = _reactionService.GetDislikes(targetId, type);
 
-            var reactionCount = new ReactionCount
-            {
-                Likes = likes,
-                Dislikes = dislikes
-            };
+			var reactionCount = new ReactionCount
+			{
+				Likes = likes,
+				Dislikes = dislikes
+			};
 
-            return Ok(reactionCount);
-        }
+			return Ok(reactionCount);
+		}
 
-        [HttpPost("likes")]
-        [Authorize(Roles = "Customer")]
-        public ActionResult<StatusResponse> AddReaction( Guid targetId, ReactionTypes type, bool like)
-        {
-            Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
-            bool success = _reactionService.AddReaction(UserId, targetId, type, like);
-            if (success)
-            {
-                return Ok(StatusResponse.Success);
-            }
+		[HttpPost("likes")]
+		[Authorize(Roles = "Customer")]
+		public ActionResult<StatusResponse> AddReaction([FromBody] Guid targetId, [FromBody] ReactionTypes type, [FromBody] bool like)
+		{
+			Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
+			bool success = _reactionService.AddReaction(UserId, targetId, type, like);
+			if (success)
+			{
+				return Ok(StatusResponse.Success);
+			}
 
-            return BadRequest(StatusResponse.Failed("واکنش مشتری از قبل ثبت شده."));
-        }
+			return BadRequest(StatusResponse.Failed("واکنش مشتری از قبل ثبت شده."));
+		}
 
-        [HttpDelete("likes")]
-        [Authorize(Roles = "Customer")]
-        public ActionResult<StatusResponse> DeleteReaction( Guid targetId, ReactionTypes type)
-        {
-            Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
-            bool success = _reactionService.DeleteReaction(UserId, targetId, type);
-            if (success)
-            {
-                return Ok(StatusResponse.Success);
-            }
+		[HttpDelete("likes")]
+		[Authorize(Roles = "Customer")]
+		public ActionResult<StatusResponse> DeleteReaction([FromBody] Guid targetId, [FromBody] ReactionTypes type)
+		{
+			Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
+			bool success = _reactionService.DeleteReaction(UserId, targetId, type);
+			if (success)
+			{
+				return Ok(StatusResponse.Success);
+			}
 
-            return NotFound(StatusResponse.Failed("واکنش مورد نظر پیدا نشد."));
-        }
-    }
-
+			return NotFound(StatusResponse.Failed("واکنش مورد نظر پیدا نشد."));
+		}
+	}
 }

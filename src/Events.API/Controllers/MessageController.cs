@@ -12,43 +12,46 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Events.API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
-    public class MessageController : ControllerBase
-    {
-        private readonly MessageService _messageService;
+	[ApiController]
+	[Route("api/[controller]")]
+	[Authorize]
+	public class MessageController : ControllerBase
+	{
+		private readonly MessageService _messageService;
 
-        public MessageController(MessageService messageService)
-        {
-            _messageService = messageService;
-        }
-        [Route("messages")]
-        [HttpGet]
-        public ActionResult<List<Message>> GetMessages([FromQuery] DateTime startDate, int count, bool isRead)
-        {
-            Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
-            if (UserId == Guid.Empty)
-                return Unauthorized(StatusResponse.Failed("اجازه دسترسی ندارید."));
-            List<Message> messages = _messageService.GetUserMessages(UserId).Where(c => c.IsRead == isRead).ToList();
-            if (startDate != default(DateTime))
-                messages = messages.Where(c => c.IssueDate < startDate).OrderByDescending(c => c.IssueDate).ToList();
-            messages = messages.Take(count).ToList();
-            if (messages == null)
-                return NotFound(StatusResponse.Failed("پیامی پیدا نشد."));
-            return Ok(messages);
-        }
-        [Route("messages")]
-        [HttpPut("{id}")]
-        public ActionResult<StatusResponse> MarkMessageAsRead(Guid id)
-        {
-            bool success = _messageService.ReadMessage(id);
+		public MessageController(MessageService messageService)
+		{
+			_messageService = messageService;
+		}
 
-            if (success)
-            {
-                return Ok(StatusResponse.Success);
-            }
+		[Route("messages")]
+		[HttpGet]
+		public ActionResult<List<Message>> GetMessages([FromQuery] DateTime startDate, int count, bool isRead)
+		{
+			_ = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
 
-            return BadRequest(StatusResponse.Failed("خطایی رخ داده."));
-        }
-    }
+			List<Message> messages = _messageService.GetUserMessages(UserId).Where(c => c.IsRead == isRead).ToList();
+			if (startDate != default)
+				messages = messages.Where(c => c.IssueDate < startDate).OrderByDescending(c => c.IssueDate).ToList();
+
+			messages = messages.Take(count).ToList();
+
+			if (messages == null)
+				return NotFound(StatusResponse.Failed("پیامی پیدا نشد."));
+
+			return Ok(messages);
+		}
+
+		[Route("messages/{id}")]
+		[HttpPut]
+		public ActionResult<StatusResponse> MarkMessageAsRead([FromQuery] Guid id)
+		{
+			bool success = _messageService.ReadMessage(id);
+
+			if (!success)
+				return BadRequest(StatusResponse.Failed("خطایی رخ داده."));
+
+			return Ok(StatusResponse.Success);
+		}
+	}
 }
