@@ -81,10 +81,12 @@ namespace Products.API.Controllers
 			return Ok(StatusResponse.Success);
 		}
 
+		//TODO: POST - GetSubcategoryFields
+
 		[HttpPut]
 		[Route("subcategories/{id}/fields")]
 		[Authorize(Roles = "Admin , StoreKeeper , Seller")]
-		public ActionResult<StatusResponse> UpdateSubcategoryFields(Guid id, [FromBody] List<Field> fields)
+		public ActionResult<StatusResponse> UpdateSubcategoryFields(Guid id, [FromBody] List<Field> fields) //TODO: List<Field> => List<string>
 		{
 			if (id == default)
 				return BadRequest(StatusResponse.Failed(" اطلاعات زیردسته را وارد نکردید."));
