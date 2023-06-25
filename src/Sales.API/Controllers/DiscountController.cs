@@ -16,9 +16,9 @@ namespace Sales.API.Controllers
     [Route("api/[controller]")]
     public class DiscountController : ControllerBase
     {
-        private readonly PaymentService _paymentService;
+        private readonly IPaymentService _paymentService;
 
-        public DiscountController(PaymentService paymentService)
+        public DiscountController(IPaymentService paymentService)
         {
             _paymentService = paymentService;
         }
@@ -47,9 +47,10 @@ namespace Sales.API.Controllers
         }
 
         [HttpPost("discountTokens")]
-        [Authorize(Roles = "Admin , Owner")]
+        //[Authorize(Roles = "Admin , Owner")]
         public ActionResult<DiscountToken> CreateDiscountToken([FromBody] PostDiscountToken discountToken)
         {
+            
             DiscountToken createdToken = _paymentService.CreateDiscountToken(discountToken);
 
             return Ok(createdToken);

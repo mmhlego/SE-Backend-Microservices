@@ -5,7 +5,7 @@ using Products.API.Models;
 using Products.API.Models.Requests;
 using Products.API.Services;
 
-namespace YourNamespace.Controllers
+namespace Products.API.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
@@ -19,7 +19,7 @@ namespace YourNamespace.Controllers
         }
 
         [HttpGet]
-        [Route("/categories")]
+        [Route("categories")]
         public ActionResult<List<Category>> GetCategories()
         {
             var categories = _categoryService.GetCategories();
@@ -27,7 +27,7 @@ namespace YourNamespace.Controllers
         }
 
         [HttpGet]
-        [Route("/subcategories")]
+        [Route("subcategories")]
         public ActionResult<List<Subcategory>> GetSubcategories()
         {
             var subcategories = _categoryService.GetSubcategories(default(Guid));
@@ -44,7 +44,7 @@ namespace YourNamespace.Controllers
 
 
         [HttpPost]
-        [Route("/categories")]
+        [Route("categories")]
         [Authorize(Roles = "Admin , StoreKeeper")]
         public ActionResult<StatusResponse> AddCategory([FromBody] CategoryRequests categoryRequest)
         {
@@ -58,7 +58,7 @@ namespace YourNamespace.Controllers
         }
 
         [HttpPost]
-        [Route("/subcategories")]
+        [Route("subcategories")]
         [Authorize(Roles = "Admin , StoreKeeper , Seller")]
         public ActionResult AddSubcategory([FromBody] SubcategoryRequests subcategoryRequests)
         {
@@ -69,7 +69,7 @@ namespace YourNamespace.Controllers
         }
 
         [HttpPut]
-        [Route("/categories/{id}")]
+        [Route("categories/{id}")]
         [Authorize(Roles = "Admin , StoreKeeper")]
         public ActionResult UpdateCategory(Guid id, [FromBody] CategoryRequests categoryRequests)
         {
@@ -83,7 +83,7 @@ namespace YourNamespace.Controllers
         }
 
         [HttpPut]
-        [Route("/subcategories/{id}")]
+        [Route("subcategories/{id}")]
         [Authorize(Roles = "Admin , StoreKeeper , Seller")]
         public ActionResult<StatusResponse> UpdateSubcategory(Guid id, [FromBody] SubcategoryRequests subcategoryRequests)
         {
@@ -98,7 +98,7 @@ namespace YourNamespace.Controllers
         }
 
         [HttpPut]
-        [Route("/subcategories/{id}/fields")]
+        [Route("subcategories/{id}/fields")]
         [Authorize(Roles = "Admin , StoreKeeper , Seller")]
         public ActionResult<StatusResponse> UpdateSubcategoryFields(Guid id, [FromBody] List<Field> fields)
         {
@@ -107,10 +107,12 @@ namespace YourNamespace.Controllers
 
             if (_categoryService.GetSubcategoryById(id) == null)
                 return NotFound(StatusResponse.Failed("زیردسته مورد نظر پیدا نشد."));
-
+            
             foreach (Field f in fields)
             {
-                if (f.SubcategoryId != id)
+                if (_categoryService.GetFieldById(f.Id) == null)
+                    return BadRequest(StatusResponse.Failed("فیلد مورد نظر وجود ندارد."));
+                    if (f.SubcategoryId != id)
                     return BadRequest(StatusResponse.Failed("خطایی رخ داده."));
 
                 _categoryService.UpdateField(f.Id, f.Title);
@@ -120,7 +122,7 @@ namespace YourNamespace.Controllers
         }
 
         [HttpPost]
-        [Route("/subcategories/{id}/fields")]
+        [Route("subcategories/{id}/fields")]
         [Authorize(Roles = "Admin , StoreKeeper , Seller")]
         public ActionResult<StatusResponse> AddSubcategoryFields(Guid id, string title)
         {

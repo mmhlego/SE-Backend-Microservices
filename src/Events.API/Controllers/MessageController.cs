@@ -37,8 +37,8 @@ namespace Events.API.Controllers
                 return NotFound(StatusResponse.Failed("پیامی پیدا نشد."));
             return Ok(messages);
         }
-        [Route("messages")]
-        [HttpPut("{id}")]
+       
+        [HttpPut("messages/{id}")]
         public ActionResult<StatusResponse> MarkMessageAsRead(Guid id)
         {
             bool success = _messageService.ReadMessage(id);

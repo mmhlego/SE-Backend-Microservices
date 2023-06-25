@@ -56,7 +56,7 @@ namespace Products.API.Services {
             }
             var newProduct = new Product {
                 ProductId = request.Product.ProductId,
-                Subcategory = request.Product.Subcategory,
+                SubcategoryId = request.Product.SubcategoryId,
                 Name = request.Product.Name,
                 Description = request.Product.Description,
                 State = ProductStates.Available

@@ -16,8 +16,7 @@ namespace Sales.API.Models {
         public Order Order { get; set; }
 
         public Guid CustomerAddressId { get; set; }
-        [ForeignKey("CustomerAddressId")]
-        public CustomerAddress CustomerAddress { get; set; }
+        
 
         public Guid? DiscountTokenId { get; set; } = null;
     }
