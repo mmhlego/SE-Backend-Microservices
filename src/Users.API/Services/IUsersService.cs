@@ -5,6 +5,8 @@ namespace Users.API.Services {
         List<User> GetUsers();
         User? GetUserById(Guid id);
         User? GetUserByUsername(string username);
+        User? GetUserByEmail(string Email);
+        User? GetUserByPhoneNumber(string phoneNumber);
         void UpdateUser(User user);
         void AddUser(User user);
 
@@ -17,5 +19,7 @@ namespace Users.API.Services {
         Seller? GetSellerByUserId(Guid userId);
         void AddSeller(Guid userId);
         void UpdateSeller(Seller seller);
+
+        
     }
 }

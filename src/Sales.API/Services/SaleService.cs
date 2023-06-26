@@ -104,6 +104,10 @@ namespace Sales.API.Services
             return (productIds);
 
         }
+        public List<SalePrice> GetPriceHistoryBySaleId(Guid id)
+        {
+            return _context.SalePrices.Where(c => c.SaleId == id).OrderByDescending(c => c.UpdateDate).ToList();
+        }
         public Sale? GetSaleById(Guid id)
         {
             return _context.Sales.FirstOrDefault(s => s.Id == id);

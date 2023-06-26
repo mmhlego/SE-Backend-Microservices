@@ -145,5 +145,10 @@ namespace Products.API.Services {
             _context.SaveChanges();
             
         }
+        public void DeleteFieldList(List<Field> fields)
+        {
+            _context.Fields.RemoveRange(fields);
+            _context.SaveChanges();
+        }
     }
 }
