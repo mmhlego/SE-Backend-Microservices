@@ -22,7 +22,7 @@ namespace Sales.API.Models {
         public Guid UserId { get; set; }
        
 
-        public Guid? PurchaseId { get; set; } = null;
+        
 
         public List<OrderItem> OrderItems { get; set; }
     }
