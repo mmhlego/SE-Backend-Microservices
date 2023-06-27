@@ -9,7 +9,7 @@ using Users.API.Services;
 namespace Users.API.Controllers
 {
 	[ApiController]
-	[Route("api/[controller]")]
+	[Route("api/[controller]/")]
 	public class AuthController : ControllerBase
 	{
 		private readonly IUsersService _users;
@@ -22,7 +22,7 @@ namespace Users.API.Controllers
 		}
 
 		[HttpPost]
-		[Route("/login")]
+		[Route("login")]
 		public ActionResult<AuthenticationResponse> Login([FromBody] UserLogin loginRequest)
 		{
 			//TODO: UsernameOrEmail
@@ -41,13 +41,16 @@ namespace Users.API.Controllers
 				return Ok(StatusResponse.Failed("کاربر منع شده."));
 			}
 
+			Console.WriteLine(user.Id.ToString());
+			Console.WriteLine(user.Type.ToString());
+			Console.WriteLine(_jwt.GenerateJwtToken(user.Username, user.Id.ToString(), user.Type.ToString()).JwtToken);
 			return Ok(_jwt.GenerateJwtToken(user.Username, user.Id.ToString(), user.Type.ToString()));
 		}
 
 		//TODO: POST - /loginByPhoneNumber
 
 		[HttpPost]
-		[Route("/register")]
+		[Route("register")]
 		public ActionResult<AuthenticationResponse> RegisterUser([FromBody] UserRegister registerRequest)
 		{
 			if (!ModelState.IsValid)
@@ -98,7 +101,7 @@ namespace Users.API.Controllers
 		}
 
 		[HttpPut]
-		[Route("/changePassword")]
+		[Route("changePassword")]
 		//TODO: Authorize
 		public ActionResult<StatusResponse> ChangePassword([FromBody] ChangePassword changePasswordRequest)
 		{

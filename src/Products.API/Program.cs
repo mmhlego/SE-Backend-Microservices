@@ -10,8 +10,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSingleton<JwtTokenHandler>();
 builder.Services.AddJwtAuthentication();
 
-builder.Services.AddDbContext<ProductsContext>(options => {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
+builder.Services.AddDbContext<ProductsContext>(options =>
+{
+	options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer"));
 });
 
 builder.Services.AddScoped<ICategoryService, CategoryService>();
@@ -25,21 +26,25 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment()) {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+if (app.Environment.IsDevelopment())
+{
+	app.UseSwagger();
+	app.UseSwaggerUI();
 }
 
-using (var scope = app.Services.CreateScope()) {
-    var context = scope.ServiceProvider.GetRequiredService<ProductsContext>();
-    context.Database.EnsureCreated();
-    context.EnsureCreatingMissingTables();
+using (var scope = app.Services.CreateScope())
+{
+	var context = scope.ServiceProvider.GetRequiredService<ProductsContext>();
+	context.Database.EnsureCreated();
+	context.EnsureCreatingMissingTables();
 }
 
 app.UseMiddleware(typeof(ExceptionHandlingMiddleware));
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
+app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllers();
