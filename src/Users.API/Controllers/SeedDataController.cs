@@ -9,7 +9,7 @@ using Users.API.Data;
 namespace Users.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/")]
     public class SeedDataController : ControllerBase
     {
         private readonly UsersContext _context;

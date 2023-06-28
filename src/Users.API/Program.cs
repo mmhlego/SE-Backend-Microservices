@@ -16,6 +16,7 @@ builder.Services.AddDbContext<UsersContext>(options =>
 });
 
 builder.Services.AddScoped<IUsersService, UsersService>();
+IVerificationService verificationService;
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

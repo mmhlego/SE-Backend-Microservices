@@ -17,7 +17,7 @@ namespace SharedModels.Requests
         public string Information { get; set; }
         public string Address { get; set; }
     }
-    public class UpdateSellerProfile
+    public class SellerInfo
     {
         public string Username { get; set; }
         public string Password { get; set; }

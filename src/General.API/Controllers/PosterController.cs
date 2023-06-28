@@ -15,7 +15,7 @@ using Chat.API.Models;
 namespace General.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/")]
     public class PosterController : ControllerBase
     {
         PosterService _poster;
@@ -53,7 +53,7 @@ namespace General.API.Controllers
         {
             Poster? poster = _poster.GetPosterById(posterId);
             if (poster == null)
-                return NotFound(StatusResponse.Failed("پوستر مورد نظر پیدا نشد."));
+                return Ok(StatusResponse.Failed("پوستر مورد نظر پیدا نشد."));
 
             poster.Id = posterId;
             poster.Title = request.Title;
@@ -74,7 +74,7 @@ namespace General.API.Controllers
 
             if (poster == null)
             {
-                return NotFound(StatusResponse.Failed("پوستر مورد نظر پیدا نشد."));
+                return Ok(StatusResponse.Failed("پوستر مورد نظر پیدا نشد."));
             }
             _poster.DeletePoster(posterId);
             return Ok(poster);

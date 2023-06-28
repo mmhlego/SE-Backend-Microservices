@@ -14,7 +14,7 @@ using SharedModels;
 namespace Sales.API.Controllers
 {
 	[ApiController]
-	[Route("api/[controller]")]
+	[Route("api/[controller]/")]
 	public class SaleController : ControllerBase
 	{
 		private readonly ISaleService _saleService;
@@ -41,7 +41,7 @@ namespace Sales.API.Controllers
 
 			if (sales.Count == 0)
 			{
-				return NotFound(StatusResponse.Failed("پیدا نشد."));
+				return Ok(StatusResponse.Failed("پیدا نشد."));
 			}
 
 			return Ok(sales);
@@ -67,11 +67,11 @@ namespace Sales.API.Controllers
 			_ = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
 			var sale = _saleService.GetSaleById(id);
 			if (sale == null)
-				return NotFound(StatusResponse.Failed("پیدا نشد."));
+				return Ok(StatusResponse.Failed("پیدا نشد."));
 			if (role == UserTypes.Seller)
 			{
 				if (sale.UserId != UserId)
-					return Unauthorized(StatusResponse.Failed("اجازه دسترسی ندارید."));
+					return Ok(StatusResponse.Failed("اجازه دسترسی ندارید."));
 			}
 			_saleService.UpdateSalePrice(id, newPrice);
 			return Ok(StatusResponse.Success);
@@ -85,11 +85,11 @@ namespace Sales.API.Controllers
 			_ = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
 			var sale = _saleService.GetSaleById(id);
 			if (sale == null)
-				return NotFound(StatusResponse.Failed("پیدا نشد."));
+				return Ok(StatusResponse.Failed("پیدا نشد."));
 			if (role == UserTypes.Seller)
 			{
 				if (sale.UserId != UserId)
-					return Unauthorized(StatusResponse.Failed("اجازه دسترسی ندارید"));
+					return Ok(StatusResponse.Failed("اجازه دسترسی ندارید"));
 			}
 			_saleService.UpdateSaleAmount(id, amount);
 			return Ok(StatusResponse.Success);
@@ -105,7 +105,7 @@ namespace Sales.API.Controllers
 			if (role == UserTypes.Seller)
 			{
 				if (userId != UserId)
-					return Unauthorized(StatusResponse.Failed("اجازه دسترسی ندارید."));
+					return Ok(StatusResponse.Failed("اجازه دسترسی ندارید."));
 			}
 			_saleService.AddSale(userId, productId, amount, initialPrice);
 			return Ok(StatusResponse.Success);

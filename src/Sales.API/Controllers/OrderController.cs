@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace Sales.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/")]
     [ApiController]
     public class OrderController : ControllerBase
     {
@@ -23,7 +23,7 @@ namespace Sales.API.Controllers
         }
 
         
-        [HttpGet("/myOrders")]
+        [HttpGet("myOrders")]
         [Authorize(Roles = "Customer")]
         public ActionResult<List<Order>> GetMyOrders([FromQuery]int page, [FromQuery]int perPage)
         {
@@ -36,7 +36,7 @@ namespace Sales.API.Controllers
         }
 
         
-        [HttpGet("/myOrders/current")]
+        [HttpGet("myOrders/current")]
         [Authorize(Roles = "Customer")]
         public ActionResult<Order> GetCurrentUserOrder()
         {
@@ -52,7 +52,7 @@ namespace Sales.API.Controllers
         }
 
         
-        [HttpPost("/myOrders/current")]
+        [HttpPost("myOrders/current")]
         [Authorize(Roles = "Customer")]
         public ActionResult<Order> AddOrderItemToCurrentOrder([FromBody]PostOrderItem item)
         {
@@ -64,7 +64,7 @@ namespace Sales.API.Controllers
         }
 
         
-        [HttpDelete("/myOrders/current")]
+        [HttpDelete("myOrders/current")]
         [Authorize(Roles = "Customer")]
         public ActionResult<StatusResponse> RemoveProductFromCurrentOrder(Guid orderItemId)
         {
@@ -81,7 +81,7 @@ namespace Sales.API.Controllers
         }
 
        
-        [HttpGet("/orders")]
+        [HttpGet("orders")]
         [Authorize(Roles = "Storekeeper, Admin")]
         public ActionResult<List<Order>> GetOrdersByStatus([FromQuery] OrderStates? states, [FromQuery] int page, [FromQuery] int perPage, [FromQuery] Guid? userId)
         {

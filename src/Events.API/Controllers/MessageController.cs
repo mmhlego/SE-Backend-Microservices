@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Events.API.Controllers
 {
 	[ApiController]
-	[Route("api/[controller]")]
+	[Route("api/[controller]/")]
 	[Authorize]
 	public class MessageController : ControllerBase
 	{
@@ -37,7 +37,7 @@ namespace Events.API.Controllers
 			messages = messages.Take(count).ToList();
 
 			if (messages == null)
-				return NotFound(StatusResponse.Failed("پیامی پیدا نشد."));
+				return Ok(StatusResponse.Failed("پیامی پیدا نشد."));
 
 			return Ok(messages);
 		}
@@ -49,7 +49,7 @@ namespace Events.API.Controllers
 			bool success = _messageService.ReadMessage(id);
 
 			if (!success)
-				return BadRequest(StatusResponse.Failed("خطایی رخ داده."));
+				return Ok(StatusResponse.Failed("خطایی رخ داده."));
 
 			return Ok(StatusResponse.Success);
 		}

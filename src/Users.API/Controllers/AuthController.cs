@@ -37,7 +37,7 @@ namespace Users.API.Controllers
 		{
 			if (!ModelState.IsValid)
 			{
-				return BadRequest(StatusResponse.Failed("خطایی رخ داده."));
+				return Ok(StatusResponse.Failed("خطایی رخ داده."));
 			}
 			User? user = _users.GetUserByUsername(loginRequest.UsernameOrEmail);
 			if (user == null)
@@ -45,7 +45,7 @@ namespace Users.API.Controllers
 
 			if (user == null)
 			{
-				return NotFound(StatusResponse.Failed("کاربر پیدا نشد."));
+				return Ok(StatusResponse.Failed("کاربر پیدا نشد."));
 
 			}
 			else if (user.Restricted)
@@ -71,7 +71,7 @@ namespace Users.API.Controllers
 
 			if (user == null)
 			{
-				return NotFound(StatusResponse.Failed("کاربر پیدا نشد."));
+				return Ok(StatusResponse.Failed("کاربر پیدا نشد."));
 			}
 			else if (user.Restricted)
 			{
@@ -112,7 +112,7 @@ namespace Users.API.Controllers
 		{
 			if (!ModelState.IsValid)
 			{
-				return StatusCode(StatusCodes.Status400BadRequest);
+				return Ok(StatusResponse.Failed("خطایی رخ داده است."));
 			}
 
 			var username = _users.GetUserByUsername(registerRequest.Username);
@@ -172,11 +172,11 @@ namespace Users.API.Controllers
 			User? user = _users.GetUserById(UserId);
 
 			if (user == null)
-				return NotFound(StatusResponse.Failed("کاربر پیدا نشد."));
+				return Ok(StatusResponse.Failed("کاربر پیدا نشد."));
 
 			if (user.Password != changePasswordRequest.OldPassword)
 			{
-				return NotFound(StatusResponse.Failed("رمز نامعتبر است."));
+				return Ok(StatusResponse.Failed("رمز نامعتبر است."));
 
 			}
 

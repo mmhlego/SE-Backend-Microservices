@@ -39,7 +39,7 @@ namespace Users.API.Controllers
             User? admin = _admin.GetUserById(userId);
             if (admin == null)
             {
-                return NotFound(StatusResponse.Failed("ادمین  موردنظر یافت نشد"));
+                return Ok(StatusResponse.Failed("ادمین  موردنظر یافت نشد"));
             }
 
             else
@@ -56,7 +56,7 @@ namespace Users.API.Controllers
             User? admin = _admin.GetUserById(userId);
             if (admin == null)
             {
-                return NotFound(StatusResponse.Failed("ادمین موردنظر یافت نشد"));
+                return Ok(StatusResponse.Failed("ادمین موردنظر یافت نشد"));
             }
             else
             {
@@ -79,7 +79,7 @@ namespace Users.API.Controllers
             User? admin = _admin.GetUserById(userId);
             if (admin == null)
             {
-                return NotFound(StatusResponse.Failed("ادمین  موردنظر یافت نشد"));
+                return Ok(StatusResponse.Failed("ادمین  موردنظر یافت نشد"));
             }
             else
             {

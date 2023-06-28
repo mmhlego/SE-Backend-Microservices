@@ -5,7 +5,7 @@ using Chat.API.Models;
 namespace Products.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/")]
     public class RequestController : ControllerBase
     {
         private readonly IRequestService _requestService;
@@ -28,7 +28,7 @@ namespace Products.API.Controllers
             var request = _requestService.GetRequestById(id);
             if (request == null)
             {
-                return NotFound(StatusResponse.Failed("درخواست مورد نظر پیدا نشد."));
+                return Ok(StatusResponse.Failed("درخواست مورد نظر پیدا نشد."));
             }
 
             return Ok(request);
@@ -40,7 +40,7 @@ namespace Products.API.Controllers
             var request = _requestService.GetRequestById(id);
             bool success;
             if (request == null)
-                return NotFound(StatusResponse.Failed("درخواست مورد نظر پیدا نشد."));
+                return Ok(StatusResponse.Failed("درخواست مورد نظر پیدا نشد."));
             if (request.Type == ProductRequestTypes.AddRequest)
                success= _requestService.AcceptAddRequest(id);
             else success=_requestService.MergeUpdateRequest(id);
@@ -48,7 +48,7 @@ namespace Products.API.Controllers
             {
                 return Ok(StatusResponse.Success);
             }
-            else return NotFound(StatusResponse.Failed("درخواست مورد نظر پیدا نشد."));
+            else return Ok(StatusResponse.Failed("درخواست مورد نظر پیدا نشد."));
         }
 
         [HttpDelete("requests/{id}")]
@@ -60,7 +60,7 @@ namespace Products.API.Controllers
                 return Ok(StatusResponse.Success);
             }
 
-            return NotFound(StatusResponse.Failed("درخواست مورد نظر پیدا نشد."));
+            return Ok(StatusResponse.Failed("درخواست مورد نظر پیدا نشد."));
         }
     }
 

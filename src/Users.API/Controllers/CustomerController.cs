@@ -36,7 +36,7 @@ namespace Users.API.Controllers
             Customer? customer = _customers.GetCustomerByUserId(userId);
             if (customer == null)
             {
-                return NotFound(StatusResponse.Failed("مشتری  موردنظر یافت نشد"));
+                return Ok(StatusResponse.Failed("مشتری  موردنظر یافت نشد"));
             }
 
             else
@@ -53,7 +53,7 @@ namespace Users.API.Controllers
             Customer? customer = _customers.GetCustomerByUserId(userId);
             if (customer == null)
             {
-                return NotFound(StatusResponse.Failed("مشتری  موردنظر یافت نشد"));
+                return Ok(StatusResponse.Failed("مشتری  موردنظر یافت نشد"));
             }
             else
             {
@@ -71,7 +71,7 @@ namespace Users.API.Controllers
             User? customer = _customers.GetUserById(userId);
             if (customer == null)
             {
-                return NotFound(StatusResponse.Failed("مشتری  موردنظر یافت نشد"));
+                return Ok(StatusResponse.Failed("مشتری  موردنظر یافت نشد"));
             }
             else
             {
@@ -144,7 +144,7 @@ namespace Users.API.Controllers
             CustomerAddress? address = _customers.GetAddressById(addressId);
             if (address == null)
             {
-                return NotFound(StatusResponse.Failed("آدرس  موردنظر یافت نشد"));
+                return Ok(StatusResponse.Failed("آدرس  موردنظر یافت نشد"));
             }
 
             else
@@ -162,7 +162,7 @@ namespace Users.API.Controllers
             CustomerAddress? address = _customers.GetAddressById(addressId);
             if (address == null)
             {
-                return NotFound(StatusResponse.Failed("آدرس  موردنظر یافت نشد"));
+                return Ok(StatusResponse.Failed("آدرس  موردنظر یافت نشد"));
             }
             else
             {
@@ -183,7 +183,7 @@ namespace Users.API.Controllers
             CustomerAddress? address = _customers.GetAddressById(addressId);
             if (address == null)
             {
-                return NotFound(StatusResponse.Failed("آدرس  موردنظر یافت نشد"));
+                return Ok(StatusResponse.Failed("آدرس  موردنظر یافت نشد"));
             }
             else
             {

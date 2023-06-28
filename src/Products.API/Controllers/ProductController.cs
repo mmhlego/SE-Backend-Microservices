@@ -16,7 +16,7 @@ using SharedModels;
 namespace Products.API.Controllers
 {
 	[ApiController]
-	[Route("api/[controller]")]
+	[Route("api/[controller]/")]
 	public class ProductController : ControllerBase
 	{
 		private readonly IProductService _productService;
@@ -27,11 +27,11 @@ namespace Products.API.Controllers
 			_httpClient = new HttpClient();
 		}
 
-		[HttpGet("/products")]
+		[HttpGet("products")]
 		public async Task<ActionResult<List<Product>>> GetProducts(string? search, decimal? priceFrom, decimal? priceTo, Guid? subcategoryId)
 		{
 			if (priceTo != null && priceFrom != null && priceFrom > priceTo)
-				return BadRequest(StatusResponse.Failed("فیلتر قیمت گذاری درست وارد نشده."));
+				return Ok(StatusResponse.Failed("فیلتر قیمت گذاری درست وارد نشده."));
 			List<Product> products = new List<Product>();
 			if (priceTo != null || priceFrom != null)
 			{
@@ -40,12 +40,12 @@ namespace Products.API.Controllers
 
 				// Check the response status code
 				if (response.IsSuccessStatusCode == false)
-					return BadRequest(StatusResponse.Failed("خطایی رخ داده."));
+					return Ok(StatusResponse.Failed("خطایی رخ داده."));
 
 				var responseContent = await response.Content.ReadAsStringAsync();
 				var productIds = JsonConvert.DeserializeObject<List<Guid>>(responseContent);
 				if (productIds == null)
-					return NotFound(StatusResponse.Failed("کالایی پیدا نشد."));
+					return Ok(StatusResponse.Failed("کالایی پیدا نشد."));
 				productIds = productIds.Distinct().ToList();
 
 				List<Product?> p = productIds.Select(c => _productService.GetProductById(c)).ToList();
@@ -59,28 +59,28 @@ namespace Products.API.Controllers
 			if (search != null)
 				products = _productService.SearchProductsByName(search, products);
 			if (products == null)
-				return NotFound(StatusResponse.Failed("کالایی پیدا نشد."));
+				return Ok(StatusResponse.Failed("کالایی پیدا نشد."));
 
 			return Ok(products);
 		}
 
-		[HttpPost("/products")]
+		[HttpPost("products")]
 		[Authorize(Roles = "Admin , StoreKeeper , Seller")]
 		public ActionResult<StatusResponse> AddProduct(PostProductRequest productToAdd)
 		{
 			if (productToAdd.Name == null || productToAdd.Description == null)
-				return BadRequest(StatusResponse.Failed("اطلاعات کالا را کامل وارد نکردید."));
+				return Ok(StatusResponse.Failed("اطلاعات کالا را کامل وارد نکردید."));
 			_productService.AddProduct(productToAdd.Name, productToAdd.Description, productToAdd.Subcategory, productToAdd.State);
 			return Ok(StatusResponse.Success);
 		}
 
-		[HttpPut("/products/{id}")]
+		[HttpPut("products/{id}")]
 		public ActionResult<StatusResponse> UpdateProduct(Guid id, PostProductRequest product)
 		{
 			var existingProduct = _productService.GetProductById(id);
 			if (existingProduct == null)
 			{
-				return NotFound(StatusResponse.Failed("کالای مورد نظر پیدا نشد."));
+				return Ok(StatusResponse.Failed("کالای مورد نظر پیدا نشد."));
 			}
 			if (product.Name != null)
 				existingProduct.Name = product.Name;

@@ -9,112 +9,142 @@ using Users.API.Services;
 
 namespace Users.API.Controllers
 {
-	[ApiController]
-	[Route("api/[controller]/")]
-	public class SellerController : ControllerBase
-	{
+    [ApiController]
+    [Route("api/[controller]/")]
+    public class SellerController : ControllerBase
+    {
 
-		private readonly UsersService _seller;
-		public SellerController(UsersService seller)
-		{
-			_seller = seller;
-		}
+        private readonly IUsersService _seller;
+        public SellerController(UsersService seller)
+        {
+            _seller = seller;
+        }
 
-		[HttpGet]
-		[Route("sellers")]
-		public ActionResult<List<Seller>> GetSellers(int page = 0, int perPage = 0)
-		{
-			List<Seller> sellers = _seller.GetSellers();
-			Pagination<Seller> sellerPagination = Pagination<Seller>.Paginate(sellers, perPage, page);
-			return Ok(sellerPagination);
-		}
+        [HttpGet]
+        [Route("sellers")]
+        public ActionResult<List<SellerInfo>> GetSellers(int page = 0, int perPage = 0, string searchText = "")
+        {
+            List<User> users = _seller.GetUsers().Where(u => u.Type == UserTypes.Seller).ToList();
+            List<Seller> sellers = _seller.GetSellers();
+            List<Seller> sellerInfoList = _seller.GetSellers();
 
-		[HttpGet]
-		[Route("sellers/{id}")]
-		public ActionResult<Seller> GetSeller(Guid userId)
-		{
-			Seller? seller = _seller.GetSellerByUserId(userId);
-			if (seller == null)
-			{
-				return NotFound(StatusResponse.Failed("فروشنده موردنظر یافت نشد"));
-			}
+            List<SellerInfo> sellersForShow = users
+                .Join(sellerInfoList, user => user.Id, seller => seller.UserId, (user, seller) => sellerInfo(seller,user))
+                .ToList();
 
-			return Ok(seller);
-		}
+            if (searchText != "")
+            {
+                sellersForShow = sellersForShow
+            .Where(seller => seller.Username.Contains(searchText)
+                             || seller.Address.Contains(searchText)
+                             || seller.Information.Contains(searchText))
+            .ToList();
 
-		[HttpPut]
-		[Route("sellers/{id}")]
-		[Authorize(Roles = "Admin,Owner")]
-		public ActionResult<Seller> UpdateSeller(Guid userId, [FromBody] UpdateSeller request)
-		{
-			Seller? seller = _seller.GetSellerByUserId(userId);
-			if (seller == null)
-			{
-				return NotFound(StatusResponse.Failed("فروشنده  موردنظر یافت نشد"));
-			}
+            }
+            Pagination<SellerInfo> sellerPagination = Pagination<SellerInfo>.Paginate(sellersForShow, perPage, page);
+            return Ok(sellerPagination);
+        }
 
-			seller.Information = request.Information;
-			seller.Address = request.Address;
-			_seller.UpdateSeller(seller);
-			return Ok(seller);
-		}
+        [HttpGet]
+        [Route("sellers/{id}")]
+        public ActionResult<Seller> GetSeller(Guid userId)
+        {
+            Seller? seller = _seller.GetSellerByUserId(userId);
+            if (seller == null)
+            {
+                return Ok(StatusResponse.Failed("فروشنده موردنظر یافت نشد"));
+            }
 
-		[HttpDelete]
-		[Route("sellers/{id}")]
-		[Authorize(Roles = "Admin,Owner")]
-		public ActionResult<Seller> DeleteSeller(Guid userId)
-		{
-			User? seller = _seller.GetUserById(userId);
-			if (seller == null)
-			{
-				return NotFound(StatusResponse.Failed("فروشنده  موردنظر یافت نشد"));
-			}
-			else
-			{
-				seller.Restricted = true;
-				_seller.UpdateUser(seller);
-				return Ok(seller);
-			}
-		}
+            return Ok(seller);
+        }
 
-		[HttpGet]
-		[Route("profile")]
-		[Authorize(Roles = "Seller")]
-		public ActionResult<Seller> GetProfile(SellerProfile profile)
-		{
-			Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid currentUser);
-			User user = _seller.GetUserById(currentUser)!;
-			Seller seller = _seller.GetSellerByUserId(currentUser)!;
+        [HttpPut]
+        [Route("sellers/{id}")]
+        [Authorize(Roles = "Admin,Owner")]
+        public ActionResult<Seller> UpdateSeller(Guid userId, [FromBody] UpdateSeller request)
+        {
+            Seller? seller = _seller.GetSellerByUserId(userId);
+            if (seller == null)
+            {
+                return Ok(StatusResponse.Failed("فروشنده  موردنظر یافت نشد"));
+            }
 
-			profile.userInfo = user;
-			profile.Information = seller.Information;
-			profile.Address = seller.Address;
-			return Ok(profile);
-		}
+            seller.Information = request.Information;
+            seller.Address = request.Address;
+            _seller.UpdateSeller(seller);
+            return Ok(seller);
+        }
 
-		[HttpPut]
-		[Route("profile")]
-		[Authorize(Roles = "Seller")]
-		public ActionResult<User> UpdateProfile([FromBody] UpdateSellerProfile profile)
-		{
-			Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid currentUser);
-			Seller seller = _seller.GetSellerByUserId(currentUser)!;
-			User user = _seller.GetUserById(currentUser)!;
+        [HttpDelete]
+        [Route("sellers/{id}")]
+        [Authorize(Roles = "Admin,Owner")]
+        public ActionResult<Seller> DeleteSeller(Guid userId)
+        {
+            User? seller = _seller.GetUserById(userId);
+            if (seller == null)
+            {
+                return Ok(StatusResponse.Failed("فروشنده  موردنظر یافت نشد"));
+            }
+            else
+            {
+                seller.Restricted = true;
+                _seller.UpdateUser(seller);
+                return Ok(seller);
+            }
+        }
 
-			user.PhoneNumber = profile.PhoneNumber;
-			user.LastName = profile.LastName;
-			user.FirstName = profile.FirstName;
-			user.Email = profile.Email;
-			user.BirthDate = profile.BirthDate;
-			user.Avatar = profile.Avatar;
+        [HttpGet]
+        [Route("profile")]
+        [Authorize(Roles = "Seller")]
+        public ActionResult<SellerInfo> GetProfile()
+        {
+            Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid currentUser);
+            User user = _seller.GetUserById(currentUser)!;
+            Seller seller = _seller.GetSellerByUserId(currentUser)!;
+            SellerInfo sellerForShow = sellerInfo(seller, user);
+            return Ok(sellerForShow);
+        }
 
-			_seller.UpdateUser(user);
+        [HttpPut]
+        [Route("profile")]
+        [Authorize(Roles = "Seller")]
+        public ActionResult<SellerInfo> UpdateProfile([FromBody] SellerInfo profile)
+        {
+            Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid currentUser);
+            Seller seller = _seller.GetSellerByUserId(currentUser)!;
+            User user = _seller.GetUserById(currentUser)!;
 
-			seller.Address = profile.Address;
-			seller.Information = profile.Information;
+            user.PhoneNumber = profile.PhoneNumber;
+            user.LastName = profile.LastName;
+            user.FirstName = profile.FirstName;
+            user.Email = profile.Email;
+            user.BirthDate = profile.BirthDate;
+            user.Avatar = profile.Avatar;
 
-			_seller.UpdateSeller(seller);
-			return Ok(profile);
-		}
-	}
+            _seller.UpdateUser(user);
+
+            seller.Address = profile.Address;
+            seller.Information = profile.Information;
+
+            _seller.UpdateSeller(seller);
+            return Ok(profile);
+        }
+        private SellerInfo sellerInfo(Seller seller, User user)
+        {
+            SellerInfo output = new SellerInfo
+            {
+                Username = user.Username,
+                Password = user.Password,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                BirthDate = user.BirthDate,
+                Avatar = user.Avatar,
+                Email = user.Email,
+                PhoneNumber = user.PhoneNumber,
+                Address = seller.Address,
+                Information = seller.Information
+            };
+            return output;
+        }
+    }
 }

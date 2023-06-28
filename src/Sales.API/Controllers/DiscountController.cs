@@ -13,7 +13,7 @@ using Sales.API.Services;
 namespace Sales.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/")]
     public class DiscountController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
@@ -29,11 +29,11 @@ namespace Sales.API.Controllers
             decimal discount = _paymentService.EvaluateDiscount(token);
 
             if (discount == 0)
-                return NotFound(StatusResponse.Failed("کد تخفیف پیدا نشد."));
+                return Ok(StatusResponse.Failed("کد تخفیف پیدا نشد."));
             if (discount == -1)
-                return NotFound(StatusResponse.Failed("تاریخ انقضا سپری شده."));
+                return Ok(StatusResponse.Failed("تاریخ انقضا سپری شده."));
             if (discount < 0)
-                return BadRequest(StatusResponse.Failed("خطایی رخ داده."));
+                return Ok(StatusResponse.Failed("خطایی رخ داده."));
             return Ok(discount);
         }
 
@@ -67,7 +67,7 @@ namespace Sales.API.Controllers
                 return Ok(StatusResponse.Success);
             }
 
-            return NotFound(StatusResponse.Failed("کد تخفیف پیدا نشد."));
+            return Ok(StatusResponse.Failed("کد تخفیف پیدا نشد."));
         }
 
 
