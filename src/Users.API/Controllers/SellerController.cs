@@ -49,19 +49,20 @@ namespace Users.API.Controllers
 		[Route("sellers/{id}")]
 		public ActionResult<SellerInfo> GetSeller(Guid userId)
 		{
+			User? user = _seller.GetUserById(userId);
 			Seller? seller = _seller.GetSellerByUserId(userId);
-			if (seller == null)
+			if (seller == null || user == null)
 			{
 				return Ok(StatusResponse.Failed("فروشنده موردنظر یافت نشد"));
 			}
-
-			return Ok(seller);
+            SellerInfo sellerForShow = sellerInfo(seller, user);
+            return Ok(sellerForShow);
 		}
 
 		[HttpPut]
 		[Route("sellers/{id}")]
 		[Authorize(Roles = "Admin,Owner")]
-		public ActionResult<SellerInfo> UpdateSeller(Guid userId, [FromBody] UpdateSeller request)
+		public ActionResult<SellerInfo> UpdateSeller(Guid userId, [FromBody] SellerInfo profile)
 		{
 			Seller? seller = _seller.GetSellerByUserId(userId);
 			if (seller == null)
@@ -69,26 +70,42 @@ namespace Users.API.Controllers
 				return Ok(StatusResponse.Failed("فروشنده  موردنظر یافت نشد"));
 			}
 
-			seller.Information = request.Information;
-			seller.Address = request.Address;
-			_seller.UpdateSeller(seller);
-			return Ok(seller);
-		}
+            _ = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid currentUser);
+            User user = _seller.GetUserById(currentUser)!;
+
+            user.PhoneNumber = profile.PhoneNumber;
+            user.LastName = profile.LastName;
+            user.FirstName = profile.FirstName;
+            user.Email = profile.Email;
+            user.BirthDate = profile.BirthDate;
+            user.Avatar = profile.Avatar;
+
+            _seller.UpdateUser(user);
+
+            seller.Address = profile.Address;
+            seller.Information = profile.Information;
+
+            _seller.UpdateSeller(seller);
+            return Ok(profile);
+        }
 
 		[HttpDelete]
 		[Route("sellers/{id}")]
 		[Authorize(Roles = "Admin,Owner")]
 		public ActionResult<SellerInfo> DeleteSeller(Guid userId)
 		{
-			User? seller = _seller.GetUserById(userId);
-			if (seller == null)
-			{
-				return Ok(StatusResponse.Failed("فروشنده  موردنظر یافت نشد"));
-			}
 
-			seller.Restricted = true;
-			_seller.UpdateUser(seller);
-			return Ok(seller);
+            User? user = _seller.GetUserById(userId);
+            Seller? seller = _seller.GetSellerByUserId(userId);
+            if (seller == null || user == null)
+            {
+                return Ok(StatusResponse.Failed("فروشنده موردنظر یافت نشد"));
+            }
+
+            user.Restricted = true;
+			_seller.UpdateUser(user);
+
+			return Ok(sellerInfo(seller, user));
 		}
 
 		[HttpGet]
