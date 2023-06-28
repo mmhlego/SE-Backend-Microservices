@@ -36,7 +36,7 @@ namespace Users.API.Controllers
 			Seller? seller = _seller.GetSellerByUserId(userId);
 			if (seller == null)
 			{
-				return NotFound(StatusResponse.Failed("فروشنده موردنظر یافت نشد"));
+				return Ok(StatusResponse.Failed("فروشنده موردنظر یافت نشد"));
 			}
 
 			return Ok(seller);
@@ -50,7 +50,7 @@ namespace Users.API.Controllers
 			Seller? seller = _seller.GetSellerByUserId(userId);
 			if (seller == null)
 			{
-				return NotFound(StatusResponse.Failed("فروشنده  موردنظر یافت نشد"));
+				return Ok(StatusResponse.Failed("فروشنده  موردنظر یافت نشد"));
 			}
 
 			seller.Information = request.Information;
@@ -67,7 +67,7 @@ namespace Users.API.Controllers
 			User? seller = _seller.GetUserById(userId);
 			if (seller == null)
 			{
-				return NotFound(StatusResponse.Failed("فروشنده  موردنظر یافت نشد"));
+				return Ok(StatusResponse.Failed("فروشنده  موردنظر یافت نشد"));
 			}
 			else
 			{

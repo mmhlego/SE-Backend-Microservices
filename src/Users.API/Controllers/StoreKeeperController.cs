@@ -38,7 +38,7 @@ namespace Users.API.Controllers
             User? storeKeeper = _storeKeeper.GetUserById(userId);
             if (storeKeeper == null)
             {
-                return NotFound(StatusResponse.Failed("انباردار  موردنظر یافت نشد"));
+                return Ok(StatusResponse.Failed("انباردار  موردنظر یافت نشد"));
             }
 
             else
@@ -55,7 +55,7 @@ namespace Users.API.Controllers
             User? storeKeeper = _storeKeeper.GetUserById(userId);
             if (storeKeeper == null)
             {
-                return NotFound(StatusResponse.Failed("انباردار موردنظر یافت نشد"));
+                return Ok(StatusResponse.Failed("انباردار موردنظر یافت نشد"));
             }
             else
             {
@@ -78,7 +78,7 @@ namespace Users.API.Controllers
             User? StoreKeeper = _storeKeeper.GetUserById(userId);
             if (StoreKeeper == null)
             {
-                return NotFound(StatusResponse.Failed("ادمین  موردنظر یافت نشد"));
+                return Ok(StatusResponse.Failed("ادمین  موردنظر یافت نشد"));
             }
             else
             {

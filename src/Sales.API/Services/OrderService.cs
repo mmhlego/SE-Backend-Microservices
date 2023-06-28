@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 
-namespace   Sales.API.Services
+namespace Sales.API.Services
 {
     public class OrderService : IOrderService
     {
@@ -34,39 +34,39 @@ namespace   Sales.API.Services
         {
             var order = _context.Orders
                 .FirstOrDefault(o => o.UserId == userId && o.State == OrderStates.Filling);
-            if(order != null)
-            order.OrderItems = _context.OrderItems.Where(o => o.OrderId == order.Id).ToList();
+            if (order != null)
+                order.OrderItems = _context.OrderItems.Where(o => o.OrderId == order.Id).ToList();
             return order;
         }
 
-        public OrderItem AddOrderItemToCurrentOrder(Guid userId, Guid salePriceId , int amount)
+        public OrderItem AddOrderItemToCurrentOrder(Guid userId, Guid salePriceId, int amount)
         {
             var currentOrder = _context.Orders
                 .FirstOrDefault(o => o.UserId == userId && o.State == OrderStates.Filling);
 
             if (currentOrder == null)
             {
-       
+
                 currentOrder = new Order
                 {
                     UserId = userId,
                     State = OrderStates.Filling,
                     Id = Guid.NewGuid(),
-             
+
                 };
 
                 _context.Orders.Add(currentOrder);
             }
-           
-          
+
+
 
             var orderItem = new OrderItem
             {
                 OrderId = currentOrder.Id,
-                Amount=amount,
-                Id= Guid.NewGuid(),
-                SalePriceId=salePriceId
-                
+                Amount = amount,
+                Id = Guid.NewGuid(),
+                SalePriceId = salePriceId
+
             };
 
             _context.OrderItems.Add(orderItem);
@@ -125,6 +125,17 @@ namespace   Sales.API.Services
             _context.Orders.Update(order);
             _context.SaveChanges();
             return true;
+        }
+        public Order? UpdateOrderState(Guid id, OrderStates states)
+        {
+            var order = _context.Orders.FirstOrDefault(c => c.Id == id);
+            if (order == null)
+                return null;
+            order.State = states;
+            _context.Orders.Update(order);
+            _context.SaveChanges();
+            return order;
+
         }
     }
 }

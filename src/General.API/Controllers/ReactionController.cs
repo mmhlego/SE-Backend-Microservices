@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace General.API.Controllers
 {
 	[ApiController]
-	[Route("api/[controller]")]
+	[Route("api/[controller]/")]
 	public class ReactionController : ControllerBase
 	{
 		private readonly IReactionService _reactionService;
@@ -51,7 +51,7 @@ namespace General.API.Controllers
 				return Ok(StatusResponse.Success);
 			}
 
-			return BadRequest(StatusResponse.Failed("واکنش مشتری از قبل ثبت شده."));
+			return Ok(StatusResponse.Failed("واکنش مشتری از قبل ثبت شده."));
 		}
 
 		[HttpDelete("likes")]
@@ -65,7 +65,7 @@ namespace General.API.Controllers
 				return Ok(StatusResponse.Success);
 			}
 
-			return NotFound(StatusResponse.Failed("واکنش مورد نظر پیدا نشد."));
+			return Ok(StatusResponse.Failed("واکنش مورد نظر پیدا نشد."));
 		}
 	}
 }

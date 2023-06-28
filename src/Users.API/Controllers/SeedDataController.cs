@@ -103,7 +103,7 @@ namespace Users.API.Controllers
             _context.CustomerAddresses.AddRange(addresses);
             _context.SaveChanges();
 
-            return Ok("Persian customer addresses seeded successfully.");
+            return Ok();
         }
     }
 }

@@ -49,7 +49,7 @@ namespace Products.API.Controllers
 		{
 			if (categoryRequest == null)
 			{
-				return BadRequest(StatusResponse.Failed("اطلاعات دسته بندی را وارد نکردید."));
+				return Ok(StatusResponse.Failed("اطلاعات دسته بندی را وارد نکردید."));
 			}
 
 			_categoryService.AddCategory(categoryRequest.Title, categoryRequest.IconName);
@@ -62,7 +62,7 @@ namespace Products.API.Controllers
 		public ActionResult AddSubcategory([FromBody] SubcategoryRequests subcategoryRequests)
 		{
 			if (_categoryService.GetCategoryById(subcategoryRequests.CategoryId) == null)
-				return NotFound(StatusResponse.Failed("دسته بندی مورد نظر پیدا نشد."));
+				return Ok(StatusResponse.Failed("دسته بندی مورد نظر پیدا نشد."));
 			_categoryService.AddSubcategory(subcategoryRequests.CategoryId, subcategoryRequests.Title);
 			return Ok(StatusResponse.Success);
 		}
@@ -74,7 +74,7 @@ namespace Products.API.Controllers
 		{
 			var category = _categoryService.GetCategoryById(id);
 			if (category == null)
-				return NotFound(StatusResponse.Failed("دسته بندی مورد نظر پیدا نشد."));
+				return	Ok(StatusResponse.Failed("دسته بندی مورد نظر پیدا نشد."));
 			category.Title = categoryRequests.Title;
 			category.IconName = categoryRequests.IconName;
 			_categoryService.UpdateCategory(category);
@@ -98,10 +98,10 @@ namespace Products.API.Controllers
 		public ActionResult<StatusResponse> UpdateSubcategoryFields(Guid id, [FromBody] List<string> fields)
 		{
 			if (id == default)
-				return BadRequest(StatusResponse.Failed(" اطلاعات زیردسته را وارد نکردید."));
+				return Ok(StatusResponse.Failed(" اطلاعات زیردسته را وارد نکردید."));
 
 			if (_categoryService.GetSubcategoryById(id) == null)
-				return NotFound(StatusResponse.Failed("زیردسته مورد نظر پیدا نشد."));
+				return Ok(StatusResponse.Failed("زیردسته مورد نظر پیدا نشد."));
 			var c = _categoryService.GetFields(id);
 			if (c != null)
 				_categoryService.DeleteFieldList(c);

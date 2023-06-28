@@ -13,7 +13,7 @@ using Microsoft.EntityFrameworkCore;
 namespace General.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/[controller]/")]
     public class BookmarkController : ControllerBase
     {
         private readonly BookmarkService _bookmarkService;
@@ -24,7 +24,7 @@ namespace General.API.Controllers
         }
 
         [HttpGet]
-        [Route("/bookmarks")]
+        [Route("bookmarks")]
         public ActionResult<List<Bookmark>> GetBookmarks()
         {
             Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
@@ -34,7 +34,7 @@ namespace General.API.Controllers
         }
 
         [HttpPost]
-        [Route("/bookmark")]
+        [Route("bookmark")]
         public ActionResult<StatusResponse> AddBookmark([FromQuery] Guid productId)
         {
             Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
@@ -47,11 +47,11 @@ namespace General.API.Controllers
                 return Ok(StatusResponse.Success);
             }
 
-            return BadRequest(StatusResponse.Failed("در اضافه کردن نشانک خطایی رخ داد."));
+            return Ok(StatusResponse.Failed("در اضافه کردن نشانک خطایی رخ داد."));
         }
 
         [HttpDelete]
-        [Route("/bookmark")]
+        [Route("bookmark")]
         public ActionResult<StatusResponse> DeleteBookmark([FromQuery] Guid productId)
         {
             Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
@@ -67,7 +67,7 @@ namespace General.API.Controllers
                 return Ok(StatusResponse.Success);
             }
 
-            return BadRequest(StatusResponse.Failed("در حذف کردن نشانک خطایی رخ داد."));
+            return Ok(StatusResponse.Failed("در حذف کردن نشانک خطایی رخ داد."));
         }
 
     }

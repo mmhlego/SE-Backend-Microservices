@@ -69,7 +69,7 @@ namespace General.API.Controllers
 
 			if (!ModelState.IsValid)
 			{
-				return BadRequest(StatusResponse.Failed("در اضافه کردن کامنت خطایی رخ داده."));
+				return Ok(StatusResponse.Failed("در اضافه کردن کامنت خطایی رخ داده."));
 			}
 
 			_comments.AddComment(UserId, comment.ProductId, comment.Text);
@@ -85,12 +85,12 @@ namespace General.API.Controllers
 			ProductComment? comment = _comments.GetCommentById(commentId);
 			if (comment == null)
 			{
-				return NotFound(StatusResponse.Failed("کامنت مورد نظر پیدا نشد."));
+				return Ok(StatusResponse.Failed("کامنت مورد نظر پیدا نشد."));
 			}
 
 			if (comment.UserId != UserId && role != UserTypes.Admin)
 			{
-				return Unauthorized(StatusResponse.Failed("اجازه دسترسی ندارید."));
+				return Ok(StatusResponse.Failed("اجازه دسترسی ندارید."));
 			}
 			_comments.DeleteComment(commentId);
 			return Ok(comment);

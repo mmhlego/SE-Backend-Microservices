@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace Sales.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/")]
     [ApiController]
     public class OrderController : ControllerBase
     {
@@ -22,21 +22,21 @@ namespace Sales.API.Controllers
             _orderService = orderService;
         }
 
-        
-        [HttpGet("/myOrders")]
+
+        [HttpGet("myOrders")]
         [Authorize(Roles = "Customer")]
-        public ActionResult<List<Order>> GetMyOrders([FromQuery]int page, [FromQuery]int perPage)
+        public ActionResult<List<Order>> GetMyOrders([FromQuery] int page, [FromQuery] int perPage)
         {
             Guid userId = (Guid)GetUserIdFromToken()!;
-      
-   
+
+
             var orders = _orderService.GetUserOrders(userId);
-           orders = Pagination<Order>.Paginate(orders, perPage, page).Data;
+            orders = Pagination<Order>.Paginate(orders, perPage, page).Data;
             return Ok(orders);
         }
 
-        
-        [HttpGet("/myOrders/current")]
+
+        [HttpGet("myOrders/current")]
         [Authorize(Roles = "Customer")]
         public ActionResult<Order> GetCurrentUserOrder()
         {
@@ -51,26 +51,26 @@ namespace Sales.API.Controllers
             return Ok(order);
         }
 
-        
-        [HttpPost("/myOrders/current")]
+
+        [HttpPost("myOrders/current")]
         [Authorize(Roles = "Customer")]
-        public ActionResult<Order> AddOrderItemToCurrentOrder([FromBody]PostOrderItem item)
+        public ActionResult<Order> AddOrderItemToCurrentOrder([FromBody] PostOrderItem item)
         {
             Guid userId = (Guid)GetUserIdFromToken()!;
-            var orderItem = _orderService.AddOrderItemToCurrentOrder(userId,item.SalePriceId,item.Amount);
-                return Ok(orderItem);
-            
-         
+            var orderItem = _orderService.AddOrderItemToCurrentOrder(userId, item.SalePriceId, item.Amount);
+            return Ok(orderItem);
+
+
         }
 
-        
-        [HttpDelete("/myOrders/current")]
+
+        [HttpDelete("myOrders/current")]
         [Authorize(Roles = "Customer")]
         public ActionResult<StatusResponse> RemoveProductFromCurrentOrder(Guid orderItemId)
         {
             Guid userId = (Guid)GetUserIdFromToken()!;
 
-            var isRemoved = _orderService.RemoveOrderItemFromCurrentOrder(userId , orderItemId);
+            var isRemoved = _orderService.RemoveOrderItemFromCurrentOrder(userId, orderItemId);
 
             if (!isRemoved)
             {
@@ -80,8 +80,8 @@ namespace Sales.API.Controllers
             return Ok(StatusResponse.Success);
         }
 
-       
-        [HttpGet("/orders")]
+
+        [HttpGet("orders")]
         [Authorize(Roles = "Storekeeper, Admin")]
         public ActionResult<List<Order>> GetOrdersByStatus([FromQuery] OrderStates? states, [FromQuery] int page, [FromQuery] int perPage, [FromQuery] Guid? userId)
         {
@@ -105,7 +105,7 @@ namespace Sales.API.Controllers
 
             return Ok(order);
         }
-        
+
         [HttpDelete("orders/{id}")]
         [Authorize(Roles = "Storekeeper, Admin")]
         public ActionResult<StatusResponse> DeleteOrder(Guid id)
@@ -114,10 +114,21 @@ namespace Sales.API.Controllers
 
             if (!isDeleted)
             {
-                return Ok(StatusResponse.Failed("هیچ سبد کالایی پیدا نشد."));
+                return Ok(StatusResponse.Failed("سبد کالای مورد نظر پیدا نشد."));
             }
 
             return Ok(StatusResponse.Success);
+        }
+
+
+        [HttpPut("orders/{id}")]
+        [Authorize(Roles = "Storekeeper, Admin")]
+        public ActionResult<Order> ChangeOrderStates(Guid id, [FromBody] OrderStates states)
+        {
+            var order = _orderService.UpdateOrderState(id, states);
+            if (order == null)
+                return Ok(StatusResponse.Failed("سبد کالای مورد نظر پیدا نشد."));
+            return Ok(order);
         }
         private Guid? GetUserIdFromToken()
         {
@@ -126,7 +137,7 @@ namespace Sales.API.Controllers
 
             //Console.WriteLine(Guid.Parse(userId));
             return UserId;
-          
+
 
         }
     }
