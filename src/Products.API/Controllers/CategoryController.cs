@@ -30,7 +30,7 @@ namespace Products.API.Controllers
 		[Route("subcategories")]
 		public ActionResult<List<Subcategory>> GetSubcategories()
 		{
-			var subcategories = _categoryService.GetSubcategories(default(Guid));
+			var subcategories = _categoryService.GetSubcategories(default);
 			return Ok(subcategories);
 		}
 
@@ -81,44 +81,33 @@ namespace Products.API.Controllers
 			return Ok(StatusResponse.Success);
 		}
 
-		//TODO: POST - GetSubcategoryFields
+		[HttpGet]
+		[Route("subcategories/{id}/fields")]
+		public ActionResult<List<Field>> GetSubcategoryFields(Guid id)
+		{
+			var c = _categoryService.GetFields(id);
+			if (c == null)
+				return Ok(Array.Empty<string>());
 
-		[HttpPut]
+			return Ok(c);
+		}
+
+		[HttpPost]
 		[Route("subcategories/{id}/fields")]
 		[Authorize(Roles = "Admin , StoreKeeper , Seller")]
-		public ActionResult<StatusResponse> UpdateSubcategoryFields(Guid id, [FromBody] List<Field> fields) //TODO: List<Field> => List<string>
+		public ActionResult<StatusResponse> UpdateSubcategoryFields(Guid id, [FromBody] List<string> fields)
 		{
 			if (id == default)
 				return BadRequest(StatusResponse.Failed(" اطلاعات زیردسته را وارد نکردید."));
 
 			if (_categoryService.GetSubcategoryById(id) == null)
 				return NotFound(StatusResponse.Failed("زیردسته مورد نظر پیدا نشد."));
+			var c = _categoryService.GetFields(id);
+			if (c != null)
+				_categoryService.DeleteFieldList(c);
+			foreach (string p in fields)
+				_categoryService.AddField(id, p);
 
-			foreach (Field f in fields)
-			{
-				if (f.SubcategoryId != id)
-					return BadRequest(StatusResponse.Failed("خطایی رخ داده."));
-				if (_categoryService.GetSubcategoryById(id) == null)
-					return NotFound(StatusResponse.Failed("زیردسته مورد نظر پیدا نشد."));
-
-				_categoryService.UpdateField(f.Id, f.Title);
-			}
-
-			return Ok(StatusResponse.Success);
-		}
-
-		[HttpPost]
-		[Route("subcategories/{id}/fields")]
-		[Authorize(Roles = "Admin , StoreKeeper , Seller")]
-		public ActionResult<StatusResponse> AddSubcategoryFields(Guid id, string title)
-		{
-			if (id == default)
-				return BadRequest(StatusResponse.Failed(" اطلاعات دسته بندی را وارد نکردید."));
-
-			if (_categoryService.GetSubcategoryById(id) == null)
-				return NotFound(StatusResponse.Failed("دسته بندی مورد نظر پیدا نشد."));
-
-			_categoryService.AddField(id, title);
 			return Ok(StatusResponse.Success);
 		}
 	}

@@ -14,5 +14,6 @@ namespace Products.API.Services {
         void UpdateField(Guid fieldId, string title);
         void AddField(Guid subcategoryId, string title);
         Field GetFieldById(Guid id);
+        void DeleteFieldList(List<Field> fields);
     }
 }

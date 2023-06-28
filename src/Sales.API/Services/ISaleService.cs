@@ -14,5 +14,6 @@ namespace Sales.API.Services {
         void UpdateSaleAmount(Guid saleId, int amount);
         void UpdateSalePrice(Guid saleId, int newPrice);
         List<Guid> FilterProductsByPrice(decimal? priceFrom, decimal? priceTo);
+        List<SalePrice> GetPriceHistoryBySaleId(Guid id);
     }
 };

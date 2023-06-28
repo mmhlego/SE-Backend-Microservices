@@ -1,6 +1,8 @@
+using System.Text;
 using Microsoft.EntityFrameworkCore;
 using SharedModels;
 using Users.API.Data;
+using Users.API.Models;
 
 namespace Users.API.Services
 {
@@ -27,11 +29,18 @@ namespace Users.API.Services
 		}
 
 		public User? GetUserByUsername(string username)
-		{
+		{  
 			return _context.Users.FirstOrDefault(u => u.Username == username);
 		}
-
-		public void UpdateUser(User user)
+        public User? GetUserByEmail(string Email)
+        {
+            return _context.Users.FirstOrDefault(u => u.Email == Email);
+        }
+		public User? GetUserByPhoneNumber(string phoneNumber)
+        {
+			return _context.Users.FirstOrDefault(u => u.PhoneNumber == phoneNumber);
+        }
+        public void UpdateUser(User user)
 		{
 			if (!_context.Users.Any(u => u.Id == user.Id))
 				return;
@@ -121,16 +130,15 @@ namespace Users.API.Services
 
 		public void AddSeller(Guid userId)
 		{
-			var user = _context.Users.SingleOrDefault(u => u.Id == userId);
-			if (user == null)
+			var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+			if (user != null)
 			{
-				throw new Exception("User Not Found");
+				user.Type = UserTypes.Seller;
+				_context.Users.Update(user);
+				var seller = new Seller { UserId = userId };
+				_context.Sellers.Add(seller);
+				_context.SaveChanges();
 			}
-			user.Type = UserTypes.Seller;
-			_context.Users.Update(user);
-			var seller = new Seller { UserId = userId };
-			_context.Sellers.Add(seller);
-			_context.SaveChanges();
 		}
 
 		public void UpdateSeller(Seller seller)
@@ -141,5 +149,9 @@ namespace Users.API.Services
 			_context.Sellers.Update(seller);
 			_context.SaveChanges();
 		}
-	}
+		
+       
+
+
+    }
 }

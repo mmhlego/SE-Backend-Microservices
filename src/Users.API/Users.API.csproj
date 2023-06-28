@@ -17,10 +17,13 @@
   	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
   	  <PrivateAssets>all</PrivateAssets>
   	</PackageReference>
+	
 	<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+  	<PackageReference Include="Bogus" Version="34.0.2" />
+  	<PackageReference Include="Twilio" Version="6.8.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,5 +36,13 @@
     <None Remove="Microsoft.EntityFrameworkCore.SqlServer" />
     <None Remove="Microsoft.EntityFrameworkCore.Relational" />
     <None Remove="Microsoft.EntityFrameworkCore.Design" />
+    <None Remove="Bogus" />
+    <None Remove="Twilio" />
+    <None Remove="Models\" />
+    <None Remove="Models\Requests\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\" />
+    <Folder Include="Models\Requests\" />
   </ItemGroup>
 </Project>

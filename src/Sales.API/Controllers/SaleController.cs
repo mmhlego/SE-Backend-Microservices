@@ -48,16 +48,15 @@ namespace Sales.API.Controllers
 		}
 
 		[HttpGet("sales/{id}/history")]
-		public ActionResult<List<int>> GetPriceHistory([FromQuery] Guid id)
+		public ActionResult<List<SalePrice>> GetPriceHistory([FromQuery] Guid id)
 		{
 			var sale = _saleService.GetSaleById(id);
 			if (sale == null)
-				return UnprocessableEntity(StatusResponse.Failed("فروش موردنظر یافت نشد")); ;
+				return Ok(StatusResponse.Failed("فروش موردنظر یافت نشد")); ;
 
-			// TODO
-			// var prices = _saleService.GetPriceHistoryByProductId(id);
+			var salePrices = _saleService.GetPriceHistoryBySaleId(id);
 
-			return Ok(StatusResponse.Success);
+			return Ok(salePrices);
 		}
 
 		[HttpPut("sales/{id}/price")]
