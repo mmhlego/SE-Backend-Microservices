@@ -13,7 +13,7 @@ namespace Sales.API.Services
         bool RemoveOrderItemFromCurrentOrder(Guid userId, Guid orderItemId);
         List<Order> GetOrders(OrderStates? states, Guid? userId);
         Order? GetOrderById(Guid id);
-        Order UpdateOrder(Guid id, UpdateOrderRequest request);
         bool DeleteOrder(Guid id);
+        Order? UpdateOrderState(Guid id, OrderStates states);
     }
 }

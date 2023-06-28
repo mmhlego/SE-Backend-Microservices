@@ -126,5 +126,16 @@ namespace   Sales.API.Services
             _context.SaveChanges();
             return true;
         }
+        public Order? UpdateOrderState(Guid id , OrderStates states)
+        {
+            var order = _context.Orders.FirstOrDefault(c => c.Id == id);
+            if (order == null)
+                return null;
+            order.State = states;
+            _context.Orders.Update(order);
+            _context.SaveChanges();
+            return order;
+            
+        }
     }
 }

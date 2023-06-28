@@ -114,10 +114,21 @@ namespace Sales.API.Controllers
 
             if (!isDeleted)
             {
-                return Ok(StatusResponse.Failed("هیچ سبد کالایی پیدا نشد."));
+                return Ok(StatusResponse.Failed("سبد کالای مورد نظر پیدا نشد."))
             }
 
             return Ok(StatusResponse.Success);
+        }
+
+
+        [HttpPut("orders/{id}")]
+        [Authorize(Roles ="Storekeeper, Admin")]
+        public ActionResult<Order> ChangeOrderStates(Guid id , [FromBody]OrderStates states )
+        {
+            var order = _orderService.UpdateOrderState(id, states);
+            if (order == null)
+                return Ok(StatusResponse.Failed("سبد کالای مورد نظر پیدا نشد."));
+            return Ok(order);
         }
         private Guid? GetUserIdFromToken()
         {
