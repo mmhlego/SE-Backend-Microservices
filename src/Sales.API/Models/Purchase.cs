@@ -7,7 +7,7 @@ namespace Sales.API.Models {
     public class Purchase {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();
-        public int TotalPrice { get; set; }
+        public decimal TotalPrice { get; set; }
         public string Description { get; set; }
         public DateTime PurchaseDate { get; set; }
 
@@ -16,8 +16,6 @@ namespace Sales.API.Models {
         public Order Order { get; set; }
 
         public Guid CustomerAddressId { get; set; }
-        
-
-        public Guid? DiscountTokenId { get; set; } = null;
+        public string? DiscountToken { get; set; } = null;
     }
 }

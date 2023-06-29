@@ -1,5 +1,6 @@
 using Events.API.Data;
 using Events.API.Models;
+using SharedModels;
 
 namespace Events.API.Services {
     public class MessageService : IMessageService {
