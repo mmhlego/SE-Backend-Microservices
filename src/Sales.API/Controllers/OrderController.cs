@@ -11,123 +11,130 @@ using System.Security.Claims;
 
 namespace Sales.API.Controllers
 {
-    [Route("api/[controller]/")]
-    [ApiController]
-    public class OrderController : ControllerBase
-    {
-        private readonly IOrderService _orderService;
+	[Route("api/[controller]/")]
+	[ApiController]
+	public class OrderController : ControllerBase
+	{
+		private readonly IOrderService _orderService;
 
-        public OrderController(IOrderService orderService)
-        {
-            _orderService = orderService;
-        }
+		public OrderController(IOrderService orderService)
+		{
+			_orderService = orderService;
+		}
 
-        
-        [HttpGet("myOrders")]
-        [Authorize(Roles = "Customer")]
-        public ActionResult<List<Order>> GetMyOrders([FromQuery]int page, [FromQuery]int perPage)
-        {
-            Guid userId = (Guid)GetUserIdFromToken()!;
-      
-   
-            var orders = _orderService.GetUserOrders(userId);
-           orders = Pagination<Order>.Paginate(orders, perPage, page).Data;
-            return Ok(orders);
-        }
 
-        
-        [HttpGet("myOrders/current")]
-        [Authorize(Roles = "Customer")]
-        public ActionResult<Order> GetCurrentUserOrder()
-        {
-            Guid userId = (Guid)GetUserIdFromToken()!;
-            var order = _orderService.GetCurrentOrder(userId);
+		[HttpGet("myOrders")]
+		[Authorize(Roles = "Customer")]
+		public ActionResult<List<Order>> GetMyOrders([FromQuery] int page, [FromQuery] int perPage)
+		{
+			Guid userId = (Guid)GetUserIdFromToken()!;
 
-            if (order == null)
-            {
-                return Ok(StatusResponse.Failed("سفارشی وجود ندارد."));
-            }
+			var orders = _orderService.GetUserOrders(userId);
+			orders = Pagination<Order>.Paginate(orders, perPage, page).Data;
+			return Ok(orders);
+		}
 
-            return Ok(order);
-        }
 
-        
-        [HttpPost("myOrders/current")]
-        [Authorize(Roles = "Customer")]
-        public ActionResult<Order> AddOrderItemToCurrentOrder([FromBody]PostOrderItem item)
-        {
-            Guid userId = (Guid)GetUserIdFromToken()!;
-            var orderItem = _orderService.AddOrderItemToCurrentOrder(userId,item.SalePriceId,item.Amount);
-                return Ok(orderItem);
-            
-         
-        }
+		[HttpGet("myOrders/current")]
+		[Authorize(Roles = "Customer")]
+		public ActionResult<Order> GetCurrentUserOrder()
+		{
+			Guid userId = (Guid)GetUserIdFromToken()!;
+			var order = _orderService.GetCurrentOrder(userId);
 
-        
-        [HttpDelete("myOrders/current")]
-        [Authorize(Roles = "Customer")]
-        public ActionResult<StatusResponse> RemoveProductFromCurrentOrder(Guid orderItemId)
-        {
-            Guid userId = (Guid)GetUserIdFromToken()!;
+			if (order == null)
+				return Ok(StatusResponse.Failed("سفارشی وجود ندارد.")); // Return empty order
 
-            var isRemoved = _orderService.RemoveOrderItemFromCurrentOrder(userId , orderItemId);
+			return Ok(order);
+		}
 
-            if (!isRemoved)
-            {
-                return Ok(StatusResponse.Failed("کالا در سبد خرید شما موجود نمیباشد."));
-            }
+		[HttpPost("myOrders/current")]
+		[Authorize(Roles = "Customer")]
+		public ActionResult<Order> AddOrderItemToCurrentOrder([FromBody] PostOrderItem item)
+		{
+			Guid userId = (Guid)GetUserIdFromToken()!;
+			var orderItem = _orderService.AddOrderItemToCurrentOrder(userId, item.SalePriceId, item.Amount);
+			return Ok(orderItem);
+		}
 
-            return Ok(StatusResponse.Success);
-        }
+		[HttpPost("myOrders/current/calculate")] // TODO
+		[Authorize(Roles = "Customer")]
+		public ActionResult CalculateCart() // string? Token
+		{
+			return Ok();
+		}
 
-       
-        [HttpGet("orders")]
-        [Authorize(Roles = "Storekeeper, Admin")]
-        public ActionResult<List<Order>> GetOrdersByStatus([FromQuery] OrderStates? states, [FromQuery] int page, [FromQuery] int perPage, [FromQuery] Guid? userId)
-        {
-            var orders = _orderService.GetOrders(states, userId);
-            if (orders == null)
-                return Ok(StatusResponse.Failed("هیچ سبد کالایی پیدا نشد."));
-            var paginatedOrders = Pagination<Order>.Paginate(orders, perPage, page);
-            return Ok(paginatedOrders.Data);
-        }
+		[HttpPost("myOrders/current/checkout")] // TODO
+		[Authorize(Roles = "Customer")]
+		public ActionResult CheckoutCart() // string Description , Guid AddressId , string? Token
+		{
+			return Ok();
+		}
 
-        [HttpGet("orders/{id}")]
-        [Authorize(Roles = "Storekeeper, Admin")]
-        public ActionResult<Order> GetOrderById(Guid id)
-        {
-            var order = _orderService.GetOrderById(id);
+		[HttpDelete("myOrders/current")]
+		[Authorize(Roles = "Customer")]
+		public ActionResult<StatusResponse> RemoveProductFromCurrentOrder(Guid orderItemId)
+		{
+			Guid userId = (Guid)GetUserIdFromToken()!;
 
-            if (order == null)
-            {
-                return Ok(StatusResponse.Failed("هیچ سبد کالایی پیدا نشد."));
-            }
+			var isRemoved = _orderService.RemoveOrderItemFromCurrentOrder(userId, orderItemId);
 
-            return Ok(order);
-        }
-        
-        [HttpDelete("orders/{id}")]
-        [Authorize(Roles = "Storekeeper, Admin")]
-        public ActionResult<StatusResponse> DeleteOrder(Guid id)
-        {
-            var isDeleted = _orderService.DeleteOrder(id);
+			if (!isRemoved)
+			{
+				return Ok(StatusResponse.Failed("کالا در سبد خرید شما موجود نمیباشد."));
+			}
 
-            if (!isDeleted)
-            {
-                return Ok(StatusResponse.Failed("هیچ سبد کالایی پیدا نشد."));
-            }
+			return Ok(StatusResponse.Success);
+		}
 
-            return Ok(StatusResponse.Success);
-        }
-        private Guid? GetUserIdFromToken()
-        {
-            //var userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
-            _ = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
 
-            //Console.WriteLine(Guid.Parse(userId));
-            return UserId;
-          
+		[HttpGet("orders")]
+		[Authorize(Roles = "Storekeeper, Admin")]
+		public ActionResult<List<Order>> GetOrdersByStatus([FromQuery] OrderStates? states, [FromQuery] int page, [FromQuery] int perPage, [FromQuery] Guid? userId)
+		{
+			var orders = _orderService.GetOrders(states, userId);
+			if (orders == null)
+				return Ok(StatusResponse.Failed("هیچ سبد کالایی پیدا نشد."));
+			var paginatedOrders = Pagination<Order>.Paginate(orders, perPage, page);
+			return Ok(paginatedOrders.Data);
+		}
 
-        }
-    }
+		[HttpGet("orders/{id}")]
+		[Authorize(Roles = "Storekeeper, Admin")]
+		public ActionResult<Order> GetOrderById(Guid id)
+		{
+			var order = _orderService.GetOrderById(id);
+
+			if (order == null)
+			{
+				return Ok(StatusResponse.Failed("هیچ سبد کالایی پیدا نشد."));
+			}
+
+			return Ok(order);
+		}
+
+		[HttpDelete("orders/{id}")]
+		[Authorize(Roles = "Storekeeper, Admin")]
+		public ActionResult<StatusResponse> DeleteOrder(Guid id)
+		{
+			var isDeleted = _orderService.DeleteOrder(id);
+
+			if (!isDeleted)
+			{
+				return Ok(StatusResponse.Failed("هیچ سبد کالایی پیدا نشد."));
+			}
+
+			return Ok(StatusResponse.Success);
+		}
+		private Guid? GetUserIdFromToken()
+		{
+			//var userId = User.Claims.FirstOrDefault(c => c.Type == "UserId")?.Value;
+			_ = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
+
+			//Console.WriteLine(Guid.Parse(userId));
+			return UserId;
+
+
+		}
+	}
 }
