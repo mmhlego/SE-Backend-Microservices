@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using SharedModels;
 
 #pragma warning disable CS8618
-namespace General.API.Models {
+namespace SharedModels {
     public class Bookmark {
         [Key]
         public Guid Id { get; set; } = Guid.NewGuid();

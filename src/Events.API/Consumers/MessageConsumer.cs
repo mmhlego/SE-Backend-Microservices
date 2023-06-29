@@ -1,3 +1,4 @@
+using Events.API.Models;
 using Events.API.Services;
 using SharedModels.Events;
 
@@ -16,11 +17,11 @@ namespace Events.API.Consumers
 		{
 			if (messageEvent.TargetId != null)
 			{
-				// new message for targetId user
+				_messageService.AddMessage(messageEvent.TargetId, messageEvent.Content, messageEvent.Type);
 			}
 			else
 			{
-				// new message for all users
+				_messageService.addMessageToAllCustomers(messageEvent.Content, messageEvent.Type);
 			}
 		}
 	}

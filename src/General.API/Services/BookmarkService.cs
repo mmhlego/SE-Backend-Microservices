@@ -1,6 +1,6 @@
 using General.API.Data;
 using General.API.Models;
-
+using SharedModels;
 namespace General.API.Services {
     public class BookmarkService : IBookmarkService {
         private GeneralContext _context;

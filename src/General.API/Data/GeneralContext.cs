@@ -1,6 +1,6 @@
 using General.API.Models;
 using Microsoft.EntityFrameworkCore;
-
+using SharedModels;
 namespace General.API.Data {
     public class GeneralContext : DbContext {
         public GeneralContext(DbContextOptions<GeneralContext> options) : base(options) { }

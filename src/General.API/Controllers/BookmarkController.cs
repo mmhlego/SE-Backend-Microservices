@@ -9,6 +9,7 @@ using General.API.Models;
 using General.API.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SharedModels;
 
 namespace General.API.Controllers
 {

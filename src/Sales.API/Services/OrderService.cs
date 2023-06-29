@@ -43,7 +43,6 @@ namespace Sales.API.Services
                     Id = Guid.NewGuid(),
                     UserId = userId,
                 };
-                //TODO: Create and return new empty order for user
             }
             return order;
         }

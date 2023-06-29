@@ -1,5 +1,5 @@
 using General.API.Models;
-
+using SharedModels;
 namespace General.API.Services {
     public interface IBookmarkService {
         List<Bookmark> GetBookmarksByUserId(Guid userId);

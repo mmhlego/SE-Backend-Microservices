@@ -1,4 +1,5 @@
-﻿#pragma warning disable CS8618
+﻿using SharedModels.Events;
+#pragma warning disable CS8618
 namespace Events.API.Models {
     public class MessageRequests {
 

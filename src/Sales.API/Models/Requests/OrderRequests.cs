@@ -8,8 +8,8 @@ namespace Sales.API.Models.Requests
     }
     public class CalculateCart
     {
-        public Decimal Sum { get; set; }
-        public Decimal Discount { get; set; }
+        public decimal Sum { get; set; }
+        public decimal Discount { get; set; }
         public decimal Price { get; set; }
     }
 }

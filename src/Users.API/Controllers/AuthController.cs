@@ -59,7 +59,6 @@ namespace Users.API.Controllers
 			return Ok(_jwt.GenerateJwtToken(user.Username, user.Id.ToString(), user.Type.ToString()));
 		}
 
-		//TODO: POST - /loginByPhoneNumber
 		[HttpPost]
 		[Route("loginByPhoneNumber")]
 		public ActionResult<AuthenticationResponse> loginByPhoneNumber([FromBody] VerificationRequest v)
