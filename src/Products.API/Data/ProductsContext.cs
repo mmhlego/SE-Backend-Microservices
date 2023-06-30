@@ -22,8 +22,7 @@ namespace Products.API.Data
 		public DbSet<Product> Products { get; set; } = null!;
         public DbSet<Seller> Sellers { get; internal set; }
 		public DbSet<Sale> Sales { get; set; }
-		public DbSet<User> users { get; set; }
-		public DbSet<SalePrice> salePrices { get; set; }
+	
         protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.Entity<ProductImage>().HasKey(pi => pi.Id);
