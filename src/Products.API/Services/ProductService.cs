@@ -17,13 +17,13 @@ namespace Products.API.Services {
 
         public Product? GetProductById(Guid id) {
            
-            return _context.Products.FirstOrDefault(p => p.RowId == id);
+            return _context.Products.FirstOrDefault(p => p.ProductId == id);
         }
         
-        public void AddProduct(string name, string description, Guid subCategoryId, ProductStates state) {
+        public Product? AddProduct(string name, string description, Guid subCategoryId, ProductStates state) {
             
             if (!_context.Subcategories.Any(sc => sc.Id == subCategoryId)) {
-                return;
+                return null;
             }
 
             var product = new Product {
@@ -36,6 +36,7 @@ namespace Products.API.Services {
 
             _context.Products.Add(product);
             _context.SaveChanges();
+            return product;
         }
 
         public void UpdateProduct(Product updatedProduct) {
@@ -133,6 +134,21 @@ namespace Products.API.Services {
             }
 
             return distanceMatrix[sourceLength, targetLength];
+        }
+
+        public List<Product> FilterProductsByPrice(decimal? priceFrom, decimal? priceTo)
+        {
+
+            var sales = _context.Sales.ToList();
+            if (priceFrom != null)
+                sales = sales.Where(c => c.Price >= priceFrom).ToList();
+            if (priceTo != null)
+                sales = sales.Where(c => c.Price < priceTo).ToList();
+            List<Product> products = sales.Select(cc => _context.Products.FirstOrDefault(o => o.ProductId == cc.ProductId)).ToList();
+            
+
+            return (products);
+
         }
     }
 }

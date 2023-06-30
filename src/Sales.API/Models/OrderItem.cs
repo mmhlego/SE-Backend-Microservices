@@ -13,7 +13,6 @@ namespace Sales.API.Models {
         public Order Order { get; set; }
 
         public Guid SalePriceId { get; set; }
-        [ForeignKey("SalePriceId")]
-        public SalePrice SalePrice { get; set; }
+    
     }
 }

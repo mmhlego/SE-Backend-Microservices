@@ -5,6 +5,7 @@ using System.Reflection.Emit;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Products.API.Models;
+using Sales.API.Models;
 using SharedModels;
 
 namespace Products.API.Data
@@ -19,8 +20,11 @@ namespace Products.API.Data
 		public DbSet<Field> Fields { get; set; } = null!;
 		public DbSet<Subcategory> Subcategories { get; set; } = null!;
 		public DbSet<Product> Products { get; set; } = null!;
-
-		protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public DbSet<Seller> Sellers { get; internal set; }
+		public DbSet<Sale> Sales { get; set; }
+		public DbSet<User> users { get; set; }
+		public DbSet<SalePrice> salePrices { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			modelBuilder.Entity<ProductImage>().HasKey(pi => pi.Id);
 
