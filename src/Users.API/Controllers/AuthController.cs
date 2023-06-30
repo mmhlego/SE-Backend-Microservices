@@ -12,7 +12,8 @@ using Twilio.Rest.Api.V2010.Account;
 using Twilio.Types;
 using Users.API.Models.Requests;
 using Microsoft.AspNetCore.Authorization;
-
+using MassTransit;
+using SharedModels.Events;
 
 namespace Users.API.Controllers
 {
@@ -23,12 +24,14 @@ namespace Users.API.Controllers
 		private readonly IUsersService _users;
 		private readonly JwtTokenHandler _jwt;
 		private readonly IVerificationService _verificationService;
+		private readonly IPublishEndpoint _publishEndpoint;
 
-		public AuthController(IUsersService users, JwtTokenHandler jwt, IVerificationService verificationService)
+		public AuthController(IUsersService users, JwtTokenHandler jwt, IVerificationService verificationService, IPublishEndpoint publishEndpoint)
 		{
 			_users = users;
 			_jwt = jwt;
 			_verificationService = verificationService;
+			_publishEndpoint = publishEndpoint;
 		}
 
 		[HttpPost]
@@ -87,22 +90,30 @@ namespace Users.API.Controllers
 			if (_users.GetUserByPhoneNumber(phoneNumber) == null)
 				return Ok(StatusResponse.Failed("خطایی رخ داده."));
 			string code = GenerateVerificationCode();
-			var accountSid = "AC6e20596d549049fcb7e7b447bf6f0cf4";
-			var authToken = "c43260bfb6368ab4866294395c912e77";
-			TwilioClient.Init(accountSid, authToken);
+			// 			var accountSid = "AC6e20596d549049fcb7e7b447bf6f0cf4";
+			// 			var authToken = "c43260bfb6368ab4866294395c912e77";
+			// 			TwilioClient.Init(accountSid, authToken);
+			// 
+			// 			var messageOptions = new CreateMessageOptions(new PhoneNumber(phoneNumber));
+			// 
+			// 			messageOptions.From = new PhoneNumber("+18559554079");
+			// 			messageOptions.Body = ("Your code is " + code);
+			// 
+			// 			var message = MessageResource.Create(messageOptions);
+			// 			Console.WriteLine(message.Body);
+			// 			bool res = _verificationService.SaveVerificationCode(phoneNumber, code);
+			// if (res)
 
-			var messageOptions = new CreateMessageOptions(new PhoneNumber(phoneNumber));
+			_publishEndpoint.Publish(new SmsEvent
+			{
+				Code = code,
+				TargetPhone = phoneNumber,
+				Type = SmsTypes.Login
+			}).Wait();
 
-			messageOptions.From = new PhoneNumber("+18559554079");
-			messageOptions.Body = ("Your code is " + code);
-
-			var message = MessageResource.Create(messageOptions);
-			Console.WriteLine(message.Body);
-			bool res = _verificationService.SaveVerificationCode(phoneNumber, code);
-			if (res)
-				return Ok(StatusResponse.Success);
-			else
-				return Ok(StatusResponse.Failed("خطایی رخ داد."));
+			return Ok(StatusResponse.Success);
+			// else
+			// 	return Ok(StatusResponse.Failed("خطایی رخ داد."));
 		}
 
 		[HttpPost]

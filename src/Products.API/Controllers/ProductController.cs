@@ -54,7 +54,7 @@ namespace Products.API.Controllers
 				products = p;
 			}
 			else products = _productService.GetProducts();
-			if (subcategoryId != Guid.Empty)
+			if (subcategoryId != null)
 				products = products.Where(c => c.SubcategoryId == subcategoryId).ToList();
 			if (search != null)
 				products = _productService.SearchProductsByName(search, products);

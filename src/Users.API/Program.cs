@@ -1,4 +1,5 @@
 using JwtAuthenticationManager;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Middleware;
 using Users.API.Data;
@@ -16,7 +17,18 @@ builder.Services.AddDbContext<UsersContext>(options =>
 });
 
 builder.Services.AddScoped<IUsersService, UsersService>();
-IVerificationService verificationService;
+builder.Services.AddScoped<IVerificationService, VerificationService>();
+
+builder.Services.AddMassTransit(bus =>
+{
+	bus.SetKebabCaseEndpointNameFormatter();
+
+
+	bus.UsingRabbitMq((ctx, cfg) =>
+	{
+		cfg.Host(builder.Configuration.GetConnectionString("RabbitMq"));
+	});
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

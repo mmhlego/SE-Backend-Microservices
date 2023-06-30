@@ -1,10 +1,11 @@
 using Events.API.Models;
 using Events.API.Services;
+using MassTransit;
 using SharedModels.Events;
 
 namespace Events.API.Consumers
 {
-	public class MessageConsumer
+	public class MessageConsumer : IConsumer<MessageEvent>
 	{
 		private readonly IMessageService _messageService;
 
@@ -13,8 +14,10 @@ namespace Events.API.Consumers
 			_messageService = messageService;
 		}
 
-		public async Task Consume(MessageEvent messageEvent)
+		public async Task Consume(ConsumeContext<MessageEvent> context)
 		{
+			var messageEvent = context.Message;
+
 			if (messageEvent.TargetId != null)
 			{
 				_messageService.AddMessage(messageEvent.TargetId, messageEvent.Content, messageEvent.Type);

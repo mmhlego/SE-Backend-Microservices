@@ -3,8 +3,8 @@ namespace SharedModels.Events
 {
 	public class SmsEvent : EventBase
 	{
-		public Guid? TargetId { get; init; } = null;
-		public string? Code { get; set; } = null;
+		public string TargetPhone { get; init; }
+		public string Code { get; set; }
 		public SmsTypes Type { get; init; }
 	}
 
