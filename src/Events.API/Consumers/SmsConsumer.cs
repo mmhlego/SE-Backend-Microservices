@@ -36,7 +36,7 @@ namespace Events.API.Consumers
             email.From.Add(MailboxAddress.Parse("erfanzadsoltani1@gmail.com"));
 
             email.To.Add(MailboxAddress.Parse(message.TargetEmail));
-            email.Subject = "Seven Shop7";
+            email.Subject = "SE Project";
             email.Body = new TextPart(TextFormat.Html) { Text = "code: " + message.Code };
 
             using var smtp = new SmtpClient();

@@ -9,6 +9,7 @@ using Chat.API.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Products.API.Models;
 using Products.API.Models.Requests;
 using Products.API.Services;
 using SharedModels;
@@ -61,7 +62,18 @@ namespace Products.API.Controllers
 			if (products == null)
 				return Ok(StatusResponse.Failed("کالایی پیدا نشد."));
 
-			return Ok(products);
+            //foreach (Product product in products)
+            //{
+            //    ProductImage productImage = new ProductImage
+            //    {
+            //        Id = Guid.NewGuid(),
+            //        ProductId = product.ProductId,
+            //        ImageUrl = ""
+            //    };
+            //    _productService.AddProductImage(productImage);
+
+            //}
+            return Ok(products);
 		}
 
 		[HttpPost("products")]

@@ -5,11 +5,15 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Chat.API.Models;
+using MassTransit;
+using MassTransit.Internals.GraphValidation;
+using MassTransit.Transports;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sales.API.Models;
 using Sales.API.Services;
 using SharedModels;
+using SharedModels.Events;
 
 namespace Sales.API.Controllers
 {
@@ -18,11 +22,12 @@ namespace Sales.API.Controllers
 	public class SaleController : ControllerBase
 	{
 		private readonly ISaleService _saleService;
-
-		public SaleController(ISaleService saleService)
+        private readonly IPublishEndpoint _publishEndpoint;
+        public SaleController(ISaleService saleService,IPublishEndpoint publishEndpoint)
 		{
 			_saleService = saleService;
-		}
+            _publishEndpoint = publishEndpoint;
+        }
 
 		[HttpGet]
 		[Route("sales")]
@@ -66,6 +71,7 @@ namespace Sales.API.Controllers
 			_ = Enum.TryParse(User.FindFirstValue(ClaimTypes.Role), out UserTypes role);
 			_ = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
 			var sale = _saleService.GetSaleById(id);
+
 			if (sale == null)
 				return Ok(StatusResponse.Failed("پیدا نشد."));
 			if (role == UserTypes.Seller)
@@ -73,7 +79,20 @@ namespace Sales.API.Controllers
 				if (sale.UserId != UserId)
 					return Ok(StatusResponse.Failed("اجازه دسترسی ندارید."));
 			}
-			_saleService.UpdateSalePrice(id, newPrice);
+			_publishEndpoint.Publish(new MessageEvent
+			{
+				TargetId = UserId,
+				Content = "محصول با آیدی : " + sale.Price + "اضافه شد.",
+				Type = MessageTypes.ProductAvailable
+			}).Wait();
+            _publishEndpoint.Publish(new EmailEvent
+            {
+                Code = "محصول با آیدی : " + sale.Price + "اضافه شد.",
+                TargetEmail = "mmhlego@gmail.com",
+                Type = SmsTypes.Festival
+            }).Wait();
+
+            _saleService.UpdateSalePrice(id, newPrice);
 			return Ok(StatusResponse.Success);
 		}
 

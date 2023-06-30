@@ -8,6 +8,7 @@ namespace Products.API.Services {
         void AddProduct(string name, string description, Guid subCategory, ProductStates state);
         void UpdateProduct(Product updatedProduct);
         List<ProductImage> GetProductImages(Guid productId);
+        void AddProductImage(ProductImage productImage);
         void UpdateProductImages(Guid productId, List<string> ImageUrls);
         List<Product> SearchProductsByName(string searchQuery, List<Product> products);
     }

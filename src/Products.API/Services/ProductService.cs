@@ -3,30 +3,38 @@ using Products.API.Data;
 using Products.API.Models;
 using SharedModels;
 
-namespace Products.API.Services {
-    public class ProductService : IProductService {
+namespace Products.API.Services
+{
+    public class ProductService : IProductService
+    {
         private readonly ProductsContext _context;
 
-        public ProductService(ProductsContext context) {
+        public ProductService(ProductsContext context)
+        {
             _context = context;
         }
 
-        public List<Product> GetProducts() {
+        public List<Product> GetProducts()
+        {
             return _context.Products.ToList();
         }
 
-        public Product? GetProductById(Guid id) {
-           
+        public Product? GetProductById(Guid id)
+        {
+
             return _context.Products.FirstOrDefault(p => p.RowId == id);
         }
-        
-        public void AddProduct(string name, string description, Guid subCategoryId, ProductStates state) {
-            
-            if (!_context.Subcategories.Any(sc => sc.Id == subCategoryId)) {
+
+        public void AddProduct(string name, string description, Guid subCategoryId, ProductStates state)
+        {
+
+            if (!_context.Subcategories.Any(sc => sc.Id == subCategoryId))
+            {
                 return;
             }
 
-            var product = new Product {
+            var product = new Product
+            {
                 ProductId = Guid.NewGuid(),
                 SubcategoryId = subCategoryId,
                 Name = name,
@@ -38,11 +46,13 @@ namespace Products.API.Services {
             _context.SaveChanges();
         }
 
-        public void UpdateProduct(Product updatedProduct) {
+        public void UpdateProduct(Product updatedProduct)
+        {
             // var product = _context.Products.FirstOrDefault(p => p.RowId == updatedProduct.RowId);
             // if (product == null) {
             // throw new ArgumentException("Product not found");
-            if (!_context.Products.Any(p => p.RowId == updatedProduct.RowId)) {
+            if (!_context.Products.Any(p => p.RowId == updatedProduct.RowId))
+            {
                 return;
             }
 
@@ -56,7 +66,8 @@ namespace Products.API.Services {
             _context.SaveChanges();
         }
 
-        public List<ProductImage> GetProductImages(Guid productId) {
+        public List<ProductImage> GetProductImages(Guid productId)
+        {
             // var product = _context.Products.FirstOrDefault(p => p.RowId == productId);
             // if (product == null) {
             //     throw new ArgumentException("Product not found");
@@ -65,23 +76,28 @@ namespace Products.API.Services {
             return _context.ProductImages.Where(pi => pi.ProductId == productId).ToList();
         }
 
-        public void UpdateProductImages(Guid productId, List<string> ImageUrls) {
+        public void UpdateProductImages(Guid productId, List<string> ImageUrls)
+        {
             // var product = _context.Products.FirstOrDefault(p => p.RowId == productId);
             // if (product == null) {
             // throw new ArgumentException("Product not found");
-            if (!_context.Products.Any(p => p.RowId == productId)) {
+            if (!_context.Products.Any(p => p.RowId == productId))
+            {
                 return;
             }
 
             // delete existing images
             var productImages = _context.ProductImages.Where(pi => pi.ProductId == productId);
-            foreach (var pi in productImages) {
+            foreach (var pi in productImages)
+            {
                 _context.ProductImages.Remove(pi);
             }
 
             // add new images
-            foreach (var url in ImageUrls) {
-                var productImage = new ProductImage {
+            foreach (var url in ImageUrls)
+            {
+                var productImage = new ProductImage
+                {
                     ProductId = productId,
                     ImageUrl = url
                 };
@@ -90,8 +106,8 @@ namespace Products.API.Services {
 
             _context.SaveChanges();
         }
-        public List<Product> SearchProductsByName(string searchQuery , List<Product> products)
-        { 
+        public List<Product> SearchProductsByName(string searchQuery, List<Product> products)
+        {
             List<Product> matchedProducts = products.Where(p => IsNameMatch(p.Name, searchQuery)).ToList();
 
             return matchedProducts;
@@ -133,6 +149,13 @@ namespace Products.API.Services {
             }
 
             return distanceMatrix[sourceLength, targetLength];
+        }
+
+        public void AddProductImage(ProductImage productImage)
+        {
+            
+            _context.ProductImages.Add(productImage);
+            _context.SaveChanges();
         }
     }
 }
