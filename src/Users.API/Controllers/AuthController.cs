@@ -46,15 +46,11 @@ namespace Users.API.Controllers
 			if (user == null)
 				user = _users.GetUserByEmail(loginRequest.UsernameOrEmail);
 
-			if (user == null)
-			{
-				return Ok(StatusResponse.Failed("کاربر پیدا نشد."));
+			if (user == null || user.Password != loginRequest.Password)
+				return Ok(StatusResponse.Failed("نام کاربری یا رمز نادرست میباشد."));
 
-			}
-			else if (user.Restricted)
-			{
+			if (user.Restricted)
 				return Ok(StatusResponse.Failed("کاربر منع شده."));
-			}
 
 			Console.WriteLine(user.Id.ToString());
 			Console.WriteLine(user.Type.ToString());
@@ -63,8 +59,8 @@ namespace Users.API.Controllers
 		}
 
 		[HttpPost]
-		[Route("loginByPhoneNumber")]
-		public ActionResult<AuthenticationResponse> loginByPhoneNumber([FromBody] VerificationRequest v)
+		[Route("LoginByPhoneNumber")]
+		public ActionResult<AuthenticationResponse> LoginByPhoneNumber([FromBody] VerificationRequest v)
 		{
 			if (_verificationService.CheckVerificationCode(v.PhoneNumber, v.Code) == false)
 				return Ok(StatusResponse.Failed("کد وارد شده صحیح نیست."));
@@ -85,35 +81,30 @@ namespace Users.API.Controllers
 
 		[HttpPost]
 		[Route("SendVerificationCode")]
-		public ActionResult<StatusResponse> SendVerificationCode([FromBody] string phoneNumber)
+		public ActionResult<StatusResponse> SendVerificationCode([FromBody] UserPhoneLogin request)
 		{
-			if (_users.GetUserByPhoneNumber(phoneNumber) == null)
+			if (_users.GetUserByPhoneNumber(request.PhoneNumber) == null)
 				return Ok(StatusResponse.Failed("خطایی رخ داده."));
 			string code = GenerateVerificationCode();
-			// 			var accountSid = "AC6e20596d549049fcb7e7b447bf6f0cf4";
-			// 			var authToken = "c43260bfb6368ab4866294395c912e77";
-			// 			TwilioClient.Init(accountSid, authToken);
-			// 
-			// 			var messageOptions = new CreateMessageOptions(new PhoneNumber(phoneNumber));
-			// 
-			// 			messageOptions.From = new PhoneNumber("+18559554079");
-			// 			messageOptions.Body = ("Your code is " + code);
-			// 
-			// 			var message = MessageResource.Create(messageOptions);
-			// 			Console.WriteLine(message.Body);
-			// 			bool res = _verificationService.SaveVerificationCode(phoneNumber, code);
-			// if (res)
 
-			_publishEndpoint.Publish(new SmsEvent
+			// _publishEndpoint.Publish(new SmsEvent
+			// {
+			// 	Code = code,
+			// 	TargetPhone = request.PhoneNumber,
+			// 	Type = SmsTypes.Login
+			// }).Wait();
+
+			_verificationService.SaveVerificationCode(request.PhoneNumber, code);
+
+			Console.WriteLine($"Code: {code}");
+			_publishEndpoint.Publish(new EmailEvent
 			{
 				Code = code,
-				TargetPhone = phoneNumber,
+				TargetEmail = "mmhlego@gmail.com",
 				Type = SmsTypes.Login
 			}).Wait();
 
 			return Ok(StatusResponse.Success);
-			// else
-			// 	return Ok(StatusResponse.Failed("خطایی رخ داد."));
 		}
 
 		[HttpPost]
@@ -171,7 +162,6 @@ namespace Users.API.Controllers
 
 			return Ok(_jwt.GenerateJwtToken(user.Username, user.Id.ToString(), user.Type.ToString()));
 		}
-
 
 		[HttpPut]
 		[Route("changePassword")]
