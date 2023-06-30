@@ -22,7 +22,7 @@ namespace Users.API.Controllers
 
 		[HttpGet]
 		[Route("sellers")]
-		public ActionResult<Pagination<SellerInfo>> GetSellers(int page = 0, int perPage = 0, string searchText = "")
+		public ActionResult<Pagination<SellerInfo>> GetSellers(int page = 0, int perPage = 0, string? searchText = null)
 		{
 			List<User> users = _seller.GetUsers().Where(u => u.Type == UserTypes.Seller).ToList();
 			List<Seller> sellers = _seller.GetSellers();
@@ -32,7 +32,7 @@ namespace Users.API.Controllers
 				.Join(sellerInfoList, user => user.Id, seller => seller.UserId, (user, seller) => sellerInfo(seller, user))
 				.ToList();
 
-			if (searchText != "")
+			if (searchText != null)
 			{
 				sellersForShow = sellersForShow
 			.Where(seller => seller.Username.Contains(searchText)
@@ -55,8 +55,8 @@ namespace Users.API.Controllers
 			{
 				return Ok(StatusResponse.Failed("فروشنده موردنظر یافت نشد"));
 			}
-            SellerInfo sellerForShow = sellerInfo(seller, user);
-            return Ok(sellerForShow);
+			SellerInfo sellerForShow = sellerInfo(seller, user);
+			return Ok(sellerForShow);
 		}
 
 		[HttpPut]
@@ -70,24 +70,24 @@ namespace Users.API.Controllers
 				return Ok(StatusResponse.Failed("فروشنده  موردنظر یافت نشد"));
 			}
 
-            _ = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid currentUser);
-            User user = _seller.GetUserById(currentUser)!;
+			_ = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid currentUser);
+			User user = _seller.GetUserById(currentUser)!;
 
-            user.PhoneNumber = profile.PhoneNumber;
-            user.LastName = profile.LastName;
-            user.FirstName = profile.FirstName;
-            user.Email = profile.Email;
-            user.BirthDate = profile.BirthDate;
-            user.Avatar = profile.Avatar;
+			user.PhoneNumber = profile.PhoneNumber;
+			user.LastName = profile.LastName;
+			user.FirstName = profile.FirstName;
+			user.Email = profile.Email;
+			user.BirthDate = profile.BirthDate;
+			user.Avatar = profile.Avatar;
 
-            _seller.UpdateUser(user);
+			_seller.UpdateUser(user);
 
-            seller.Address = profile.Address;
-            seller.Information = profile.Information;
+			seller.Address = profile.Address;
+			seller.Information = profile.Information;
 
-            _seller.UpdateSeller(seller);
-            return Ok(profile);
-        }
+			_seller.UpdateSeller(seller);
+			return Ok(profile);
+		}
 
 		[HttpDelete]
 		[Route("sellers/{id}")]
@@ -95,14 +95,14 @@ namespace Users.API.Controllers
 		public ActionResult<SellerInfo> DeleteSeller(Guid userId)
 		{
 
-            User? user = _seller.GetUserById(userId);
-            Seller? seller = _seller.GetSellerByUserId(userId);
-            if (seller == null || user == null)
-            {
-                return Ok(StatusResponse.Failed("فروشنده موردنظر یافت نشد"));
-            }
+			User? user = _seller.GetUserById(userId);
+			Seller? seller = _seller.GetSellerByUserId(userId);
+			if (seller == null || user == null)
+			{
+				return Ok(StatusResponse.Failed("فروشنده موردنظر یافت نشد"));
+			}
 
-            user.Restricted = true;
+			user.Restricted = true;
 			_seller.UpdateUser(user);
 
 			return Ok(sellerInfo(seller, user));

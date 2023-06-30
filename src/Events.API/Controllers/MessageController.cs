@@ -17,20 +17,24 @@ namespace Events.API.Controllers
 	[Authorize]
 	public class MessageController : ControllerBase
 	{
-		private readonly MessageService _messageService;
+		private readonly IMessageService _messageService;
 
-		public MessageController(MessageService messageService)
+		public MessageController(IMessageService messageService)
 		{
 			_messageService = messageService;
 		}
 
 		[Route("messages")]
 		[HttpGet]
-		public ActionResult<List<Message>> GetMessages([FromQuery] DateTime startDate, int count, bool isRead)
+		public ActionResult<List<Message>> GetMessages([FromQuery] DateTime startDate, int count, bool? isRead = null)
 		{
 			_ = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
 
-			List<Message> messages = _messageService.GetUserMessages(UserId).Where(c => c.IsRead == isRead).ToList();
+			List<Message> messages = _messageService.GetUserMessages(UserId).OrderByDescending(c => c.IssueDate).ToList();
+
+			if (isRead != null)
+				messages = messages.Where(c => c.IsRead == isRead).ToList();
+
 			if (startDate != default)
 				messages = messages.Where(c => c.IssueDate < startDate).OrderByDescending(c => c.IssueDate).ToList();
 
@@ -44,7 +48,7 @@ namespace Events.API.Controllers
 
 		[Route("messages/{id}")]
 		[HttpPut]
-		public ActionResult<StatusResponse> MarkMessageAsRead([FromQuery] Guid id)
+		public ActionResult<StatusResponse> MarkMessageAsRead(Guid id)
 		{
 			bool success = _messageService.ReadMessage(id);
 
