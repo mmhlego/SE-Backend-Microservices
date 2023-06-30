@@ -75,6 +75,7 @@ namespace Products.API.Controllers
 			var category = _categoryService.GetCategoryById(id);
 			if (category == null)
 				return Ok(StatusResponse.Failed("دسته بندی مورد نظر پیدا نشد."));
+
 			category.Title = categoryRequests.Title;
 			category.IconName = categoryRequests.IconName;
 			_categoryService.UpdateCategory(category);

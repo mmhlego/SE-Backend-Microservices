@@ -99,7 +99,7 @@ namespace Users.API.Controllers
 			Seller? seller = _seller.GetSellerByUserId(userId);
 			if (seller == null || user == null)
 			{
-				return Ok(StatusResponse.Failed("فروشنده موردنظر یافت نشد"));
+				return Ok(StatusResponse.Failed("فروشنده  موردنظر یافت نشد"));
 			}
 
 			user.Restricted = true;
@@ -113,7 +113,7 @@ namespace Users.API.Controllers
 		[Authorize(Roles = "Seller")]
 		public ActionResult<SellerInfo> GetProfile()
 		{
-			Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid currentUser);
+			_ = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid currentUser);
 			User user = _seller.GetUserById(currentUser)!;
 			Seller seller = _seller.GetSellerByUserId(currentUser)!;
 			SellerInfo sellerForShow = sellerInfo(seller, user);
