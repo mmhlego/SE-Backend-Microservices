@@ -7,8 +7,14 @@ namespace SharedModels.Events
 		public string Code { get; set; }
 		public SmsTypes Type { get; init; }
 	}
+    public class EmailEvent : EventBase
+    {
+        public string TargetEmail { get; init; }
+        public string Code { get; set; }
+        public SmsTypes Type { get; init; }
+    }
 
-	public enum SmsTypes
+    public enum SmsTypes
 	{
 		Login, // Send to user
 		Festival, // Send to all customers

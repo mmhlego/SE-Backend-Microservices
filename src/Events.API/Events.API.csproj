@@ -9,6 +9,8 @@
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'http' " />
   <ItemGroup>
     <PackageReference Include="KavenegarDotNetCore" Version="1.0.7" />
+    <PackageReference Include="MailKit" Version="4.1.0" />
+    <PackageReference Include="MimeKit" Version="4.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="MassTransit" Version="8.0.14" />
     <PackageReference Include="MassTransit.AspNetCore" Version="7.3.1" />
