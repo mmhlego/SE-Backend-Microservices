@@ -7,5 +7,6 @@ namespace SharedModels.Events
 		SaleFinished, // Message to seller
 		SaleAvailable, // Message to seller + bookmarked customers
 		Festival, // Message to all customers
+		Personal
 	}
 }

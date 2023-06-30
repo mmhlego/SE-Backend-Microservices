@@ -82,12 +82,12 @@ namespace Sales.API.Controllers
 			_publishEndpoint.Publish(new MessageEvent
 			{
 				TargetId = UserId,
-				Content = "محصول با آیدی : " + sale.Price + "اضافه شد.",
+				Content = "محصول با آیدی : " + sale.Id + "اضافه شد.",
 				Type = MessageTypes.ProductAvailable
 			}).Wait();
             _publishEndpoint.Publish(new EmailEvent
             {
-                Code = "محصول با آیدی : " + sale.Price + "اضافه شد.",
+                Code = "محصول با آیدی : " + sale.Id + "اضافه شد.",
                 TargetEmail = "mmhlego@gmail.com",
                 Type = SmsTypes.Festival
             }).Wait();

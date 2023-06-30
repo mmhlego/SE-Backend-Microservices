@@ -61,6 +61,7 @@ namespace Events.API.Services
             List<Bookmark> bookmarks = _context.bookmarks.ToList();
             List<Sales.API.Models.Sale> sales = _context.Sales.ToList();
             List<Customer> customers = _context.Customers.ToList();
+            Guid persoanlId = customers.FirstOrDefault(c => c.)
             List<Guid> sellersId = _context.bookmarks
                       .Where(bookmark => _context.Sales.Any(sale => sale.ProductId == bookmark.ProductId))
                       .Select(bookmark => _context.Sales.First(sale => sale.ProductId == bookmark.ProductId).UserId)
