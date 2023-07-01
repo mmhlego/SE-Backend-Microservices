@@ -79,31 +79,7 @@ namespace Sales.API.Services
                 _context.SaveChanges();
             }
         }
-        public List<Guid> FilterProductsByPrice(decimal? priceFrom, decimal? priceTo)
-        {
-            //var saleprices = _context.SalePrices.ToList();
-            //if (priceFrom != null)
-            //    saleprices = saleprices.Where(c => c.Price >= priceFrom).ToList();
-            //if (priceTo != null)
-            //    saleprices = saleprices.Where(c => c.Price < priceTo).ToList();
-            //List<Guid> productIds = saleprices.Select(s =>
-            //{
-            //    var product = _context.Sales.FirstOrDefault(c => c.Id == s.SaleId)?.Product;
-            //    if (product != null)
-            //        return product.ProductId;
-            //    else
-            //        return Guid.Empty;
-            //}).Where(p => p != Guid.Empty).ToList();
-            //return productIds;
-            var sales = _context.Sales.ToList();
-            if (priceFrom != null)
-                sales = sales.Where(c => c.Price >= priceFrom).ToList();
-            if (priceTo != null)
-                sales = sales.Where(c => c.Price < priceTo).ToList();
-            List<Guid> productIds = sales.Select(c => c.ProductId).ToList();
-            return (productIds);
-
-        }
+ 
         public List<SalePrice> GetPriceHistoryBySaleId(Guid id)
         {
             return _context.SalePrices.Where(c => c.SaleId == id).OrderByDescending(c => c.UpdateDate).ToList();

@@ -131,11 +131,6 @@ namespace Sales.API.Controllers
 		}
 
 
-		[HttpGet]
-		[Route("getProductIds")]
-		public ActionResult<List<Guid>> ProductsFilter([FromQuery] decimal? priceFrom, [FromQuery] decimal? priceTo)
-		{
-			return Ok(_saleService.FilterProductsByPrice(priceFrom, priceTo));
-		}
+		
 	}
 }

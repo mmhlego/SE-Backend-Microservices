@@ -12,7 +12,7 @@ namespace Sales.API.Models {
         public int Amount { get; set; } = 0;
         public Guid UserId { get; set; }
 
-        public decimal Price { get; set; }
+        public long Price { get; set; }
         public List<SalePrice> Prices { get; set; }
     }
 }
