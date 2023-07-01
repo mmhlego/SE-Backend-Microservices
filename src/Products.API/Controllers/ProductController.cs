@@ -39,16 +39,29 @@ namespace Products.API.Controllers
 			else products = _productService.GetProducts();
 
 			if (products == null)
-				return Ok(StatusResponse.Failed("کالایی پیدا نشد."));
+				return Ok(new List<Product>());
 
 			if (subcategoryId != null)
 				products = products.Where(c => c.SubcategoryId == subcategoryId).ToList();
 			if (search != null)
 				products = _productService.SearchProductsByName(search, products);
 			if (products == null)
-				return Ok(StatusResponse.Failed("کالایی پیدا نشد."));
+				return Ok(new List<Product>());
+
+			products = products.Where(c => c.State == ProductStates.Available).ToList();
 
 			return Ok(products);
+		}
+
+		[HttpGet("products/{id}")]
+		public ActionResult<Product> GetProduct(Guid id)
+		{
+			var product = _productService.GetProductById(id);
+
+			if (product == null)
+				return Ok(StatusResponse.Failed("کالایی پیدا نشد."));
+
+			return Ok(product);
 		}
 
 		[HttpPost("products")]

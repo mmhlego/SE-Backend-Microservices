@@ -46,7 +46,7 @@ namespace Users.API.Controllers
 		}
 
 		[HttpGet]
-		[Route("sellers/{id}")]
+		[Route("sellers/{userId}")]
 		public ActionResult<SellerInfo> GetSeller(Guid userId)
 		{
 			User? user = _seller.GetUserById(userId);
@@ -60,7 +60,7 @@ namespace Users.API.Controllers
 		}
 
 		[HttpPut]
-		[Route("sellers/{id}")]
+		[Route("sellers/{userId}")]
 		[Authorize(Roles = "Admin,Owner")]
 		public ActionResult<SellerInfo> UpdateSeller(Guid userId, [FromBody] SellerInfo profile)
 		{
@@ -90,7 +90,7 @@ namespace Users.API.Controllers
 		}
 
 		[HttpDelete]
-		[Route("sellers/{id}")]
+		[Route("sellers/{userId}")]
 		[Authorize(Roles = "Admin,Owner")]
 		public ActionResult<SellerInfo> DeleteSeller(Guid userId)
 		{
@@ -149,8 +149,8 @@ namespace Users.API.Controllers
 		{
 			SellerInfo output = new SellerInfo
 			{
+				Id = user.Id,
 				Username = user.Username,
-				Password = user.Password,
 				FirstName = user.FirstName,
 				LastName = user.LastName,
 				BirthDate = user.BirthDate,

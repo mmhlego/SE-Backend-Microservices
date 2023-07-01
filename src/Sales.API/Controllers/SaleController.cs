@@ -22,16 +22,16 @@ namespace Sales.API.Controllers
 	public class SaleController : ControllerBase
 	{
 		private readonly ISaleService _saleService;
-        private readonly IPublishEndpoint _publishEndpoint;
-        public SaleController(ISaleService saleService,IPublishEndpoint publishEndpoint)
+		private readonly IPublishEndpoint _publishEndpoint;
+		public SaleController(ISaleService saleService, IPublishEndpoint publishEndpoint)
 		{
 			_saleService = saleService;
-            _publishEndpoint = publishEndpoint;
-        }
+			_publishEndpoint = publishEndpoint;
+		}
 
 		[HttpGet]
 		[Route("sales")]
-		public ActionResult<List<Sale>> GetSales(Guid userId, Guid productId)
+		public ActionResult<List<Sale>> GetSales([FromQuery] Guid userId, [FromQuery] Guid productId)
 		{
 			var sales = new List<Sale>();
 
@@ -85,14 +85,14 @@ namespace Sales.API.Controllers
 				Content = "محصول با آیدی : " + sale.Id + "اضافه شد.",
 				Type = MessageTypes.ProductAvailable
 			}).Wait();
-            _publishEndpoint.Publish(new EmailEvent
-            {
-                Code = "محصول با آیدی : " + sale.Id + "اضافه شد.",
-                TargetEmail = "mmhlego@gmail.com",
-                Type = SmsTypes.Festival
-            }).Wait();
+			_publishEndpoint.Publish(new EmailEvent
+			{
+				Code = "محصول با آیدی : " + sale.Id + "اضافه شد.",
+				TargetEmail = "mmhlego@gmail.com",
+				Type = SmsTypes.Festival
+			}).Wait();
 
-            _saleService.UpdateSalePrice(id, newPrice);
+			_saleService.UpdateSalePrice(id, newPrice);
 			return Ok(StatusResponse.Success);
 		}
 
@@ -131,6 +131,6 @@ namespace Sales.API.Controllers
 		}
 
 
-		
+
 	}
 }

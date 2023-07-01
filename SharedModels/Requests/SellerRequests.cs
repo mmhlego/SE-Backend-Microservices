@@ -19,8 +19,8 @@ namespace SharedModels.Requests
 	}
 	public class SellerInfo //TODO UserId? No Password
 	{
+		public Guid Id { get; set; }
 		public string Username { get; set; }
-		public string Password { get; set; }
 		public string FirstName { get; set; } = "";
 		public string LastName { get; set; } = "";
 		public DateTime BirthDate { get; set; }

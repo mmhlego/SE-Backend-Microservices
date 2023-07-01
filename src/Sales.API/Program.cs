@@ -1,4 +1,5 @@
 using JwtAuthenticationManager;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Middleware;
 using Sales.API.Data;
@@ -16,6 +17,17 @@ builder.Services.AddDbContext<SalesContext>(options =>
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<ISaleService, SaleService>();
+
+builder.Services.AddMassTransit(bus =>
+{
+	bus.SetKebabCaseEndpointNameFormatter();
+
+
+	bus.UsingRabbitMq((ctx, cfg) =>
+	{
+		cfg.Host(builder.Configuration.GetConnectionString("RabbitMq"));
+	});
+});
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
