@@ -23,7 +23,7 @@ namespace Sales.API.Services {
             if (discountToken == null)
                 return 0;
 
-            if (discountToken.ExpireDate > DateTime.Now)
+            if (discountToken.ExpireDate < DateTime.Now)
                 return -1;
      
             decimal discountAmount = 0;

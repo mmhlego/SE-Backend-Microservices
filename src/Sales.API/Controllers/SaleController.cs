@@ -11,6 +11,7 @@ using MassTransit.Transports;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Sales.API.Models;
+using Sales.API.Models.Requests;
 using Sales.API.Services;
 using SharedModels;
 using SharedModels.Events;
@@ -33,16 +34,21 @@ namespace Sales.API.Controllers
 		[Route("sales")]
 		public ActionResult<List<Sale>> GetSales([FromQuery] Guid userId, [FromQuery] Guid productId)
 		{
-			var sales = new List<Sale>();
+			var sales = _saleService.GetSales();
+			if (userId != default(Guid))
+				sales = sales.Where(c => c.UserId == userId).ToList();
+			if (productId != default(Guid) )
+				sales = sales.Where(c => c.ProductId == productId).ToList();
 
-			if (userId != default)
-			{
-				sales = _saleService.GetSalesByUserId(userId);
-			}
-			else if (productId != default)
-			{
-				sales = _saleService.GetSalesByProductId(productId);
-			}
+			//if (userId != default(Guid))
+			//{
+			//	sales = _saleService.GetSalesByUserId(userId);
+			//}
+			//else if (productId != default(Guid))
+			//{
+			//	sales = _saleService.GetSalesByProductId(productId);
+			//}
+		
 
 			if (sales.Count == 0)
 			{
@@ -66,7 +72,7 @@ namespace Sales.API.Controllers
 
 		[HttpPut("sales/{id}/price")]
 		[Authorize(Roles = "Seller , StoreKeeper")]
-		public ActionResult<StatusResponse> UpdateSalePrice(Guid id, int newPrice)
+		public ActionResult<StatusResponse> UpdateSalePrice([FromQuery] Guid id, [FromBody]long newPrice)
 		{
 			_ = Enum.TryParse(User.FindFirstValue(ClaimTypes.Role), out UserTypes role);
 			_ = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
@@ -98,7 +104,7 @@ namespace Sales.API.Controllers
 
 		[HttpPut("sales/{id}/amount")]
 		[Authorize(Roles = "Admin, Seller , StoreKeeper , Owner")]
-		public ActionResult<StatusResponse> UpdateSaleAmount(Guid id, int amount)
+		public ActionResult<StatusResponse> UpdateSaleAmount([FromQuery]Guid id, [FromBody]int amount)
 		{
 			_ = Enum.TryParse(User.FindFirstValue(ClaimTypes.Role), out UserTypes role);
 			_ = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
@@ -117,16 +123,16 @@ namespace Sales.API.Controllers
 		[HttpPost]
 		[Route("sales")]
 		[Authorize(Roles = "Admin, Seller , StoreKeeper , Owner")]
-		public ActionResult<StatusResponse> AddSale(Guid userId, Guid productId, int amount, int initialPrice)
+		public ActionResult<StatusResponse> AddSale([FromBody]PostSaleRequest p)
 		{
 			_ = Enum.TryParse(User.FindFirstValue(ClaimTypes.Role), out UserTypes role);
 			_ = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
 			if (role == UserTypes.Seller)
 			{
-				if (userId != UserId)
+				if (p.userId != UserId)
 					return Ok(StatusResponse.Failed("اجازه دسترسی ندارید."));
 			}
-			_saleService.AddSale(userId, productId, amount, initialPrice);
+			_saleService.AddSale(p.userId, p.productId, p.amount, p.initialPrice);
 			return Ok(StatusResponse.Success);
 		}
 

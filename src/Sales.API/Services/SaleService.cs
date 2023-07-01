@@ -21,13 +21,17 @@ namespace Sales.API.Services
 		{
 			return _context.Sales.Where(s => s.ProductId == productId).ToList();
 		}
+		public List<Sale> GetSales()
+        {
+			return _context.Sales.ToList();
+        }
 
 		public List<Sale> GetSalesByUserId(Guid userId)
 		{
 			return _context.Sales.Where(s => s.UserId == userId).ToList();
 		}
 
-		public void AddSale(Guid userId, Guid productId, int amount, int initialPrice)
+		public void AddSale(Guid userId, Guid productId, int amount, long initialPrice)
 		{
 			var sale = new Sale()
 			{
@@ -60,7 +64,7 @@ namespace Sales.API.Services
 			}
 		}
 
-		public void UpdateSalePrice(Guid saleId, int newPrice)
+		public void UpdateSalePrice(Guid saleId, long newPrice)
 		{
 			var sale = _context.Sales.Find(saleId);
 			if (sale != null)

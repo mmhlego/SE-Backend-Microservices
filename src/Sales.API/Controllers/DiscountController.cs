@@ -47,7 +47,7 @@ namespace Sales.API.Controllers
         }
 
         [HttpPost("discountTokens")]
-        //[Authorize(Roles = "Admin , Owner")]
+        [Authorize(Roles = "Admin , Owner")]
         public ActionResult<DiscountToken> CreateDiscountToken([FromBody] PostDiscountToken discountToken)
         {
             
