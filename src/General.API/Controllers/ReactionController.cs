@@ -27,7 +27,6 @@ namespace General.API.Controllers
 		[HttpGet("likes")]
 		public ActionResult<ReactionCount> GetLikes([FromQuery] Guid targetId, [FromQuery] ReactionTypes type)
 		{
-
 			var likes = _reactionService.GetLikes(targetId, type);
 			var dislikes = _reactionService.GetDislikes(targetId, type);
 
@@ -42,10 +41,10 @@ namespace General.API.Controllers
 
 		[HttpPost("likes")]
 		[Authorize(Roles = "Customer")]
-		public ActionResult<StatusResponse> AddReaction([FromBody] Guid targetId, [FromBody] ReactionTypes type, [FromBody] bool like)
+		public ActionResult<StatusResponse> AddReaction(AddRequest request)
 		{
-			Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
-			bool success = _reactionService.AddReaction(UserId, targetId, type, like);
+			_ = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
+			bool success = _reactionService.AddReaction(UserId, request.TargetId, request.Type, request.Like);
 			if (success)
 			{
 				return Ok(StatusResponse.Success);
@@ -56,10 +55,10 @@ namespace General.API.Controllers
 
 		[HttpDelete("likes")]
 		[Authorize(Roles = "Customer")]
-		public ActionResult<StatusResponse> DeleteReaction([FromBody] Guid targetId, [FromBody] ReactionTypes type)
+		public ActionResult<StatusResponse> DeleteReaction([FromBody] DeleteRequest request)
 		{
-			Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
-			bool success = _reactionService.DeleteReaction(UserId, targetId, type);
+			_ = Guid.TryParse(User.FindFirstValue(ClaimTypes.NameIdentifier), out Guid UserId);
+			bool success = _reactionService.DeleteReaction(UserId, request.TargetId, request.Type);
 			if (success)
 			{
 				return Ok(StatusResponse.Success);

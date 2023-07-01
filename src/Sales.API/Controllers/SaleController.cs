@@ -35,18 +35,18 @@ namespace Sales.API.Controllers
 		{
 			var sales = new List<Sale>();
 
-			if (userId != Guid.Empty)
+			if (userId != default)
 			{
 				sales = _saleService.GetSalesByUserId(userId);
 			}
-			else if (productId != Guid.Empty)
+			else if (productId != default)
 			{
 				sales = _saleService.GetSalesByProductId(productId);
 			}
 
 			if (sales.Count == 0)
 			{
-				return Ok(StatusResponse.Failed("پیدا نشد."));
+				return Ok(new List<Sale>());
 			}
 
 			return Ok(sales);

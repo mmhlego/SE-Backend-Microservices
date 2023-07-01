@@ -13,8 +13,8 @@ namespace General.API.Controllers
 	[Route("api/[controller]/")]
 	public class CommentController : ControllerBase
 	{
-		private readonly CommentService _comments;
-		public CommentController(CommentService comments)
+		private readonly ICommentService _comments;
+		public CommentController(ICommentService comments)
 		{
 			_comments = comments;
 		}
