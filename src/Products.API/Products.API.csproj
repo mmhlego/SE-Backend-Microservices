@@ -20,6 +20,7 @@
 	  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  <PrivateAssets>all</PrivateAssets>
 	</PackageReference>
+	<PackageReference Include="Bogus" Version="34.0.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +34,7 @@
     <None Remove="Microsoft.EntityFrameworkCore.Relational" />
     <None Remove="Microsoft.EntityFrameworkCore.Design" />
     <None Remove="Models\Requests\" />
+    <None Remove="Bogus" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\Requests\" />
